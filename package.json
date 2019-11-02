@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r esm index.js"
+    "dev": "nodemon -r esm index.js --ignore db.json"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,10 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "puppeteer": "^2.0.0"
+    "lowdb": "^1.0.0",
+    "node-cron": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }
