@@ -1,6 +1,7 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import db from "./db";
+import shortid from "shortid";
 
 export async function getOlxScrape(url) {
   const { data: html } = await axios.get(url);
@@ -54,7 +55,7 @@ export async function getOlxScrape(url) {
 
 export async function getOffersObj() {
   const firstUrl =
-    "https://www.olx.pl/nieruchomosci/mieszkania/katowice/?page=1";
+    "https://www.olx.pl/nieruchomosci/mieszkania/katowice/?page=30";
   const offersObj = await getOlxScrape(firstUrl);
 
   return offersObj;
@@ -69,6 +70,7 @@ export async function runCron() {
   offersPromise.map(el => {
     db.get("olxScrape")
       .push({
+        id: shortid.generate(),
         title: el.title,
         link: el.link,
         img: el.img,

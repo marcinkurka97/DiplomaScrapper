@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { runCron } from "./scrapper";
 
-cron.schedule("30 * * * *", () => {
+cron.schedule("* * * * *", () => {
   console.log("Running the CRON");
   runCron();
 });
