@@ -17,10 +17,11 @@ app.get("/scrape", async (req, res, next) => {
 app.get("/data", async (req, res, next) => {
   // Get the scrape data
   const olxScrapes = db.get("olxScrape").value();
+
   // Respond with JSON
   res.json(olxScrapes);
 });
 
-app.listen(2093, () =>
-  console.log(`App running on port http://localhost:2093`)
+app.listen(2094, () =>
+  console.log(`App running on port http://localhost:2094`)
 );

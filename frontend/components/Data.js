@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { ScrapeContext } from "./ScrapeContext";
 import "./index.scss";
-import GoogleMap from "./GoogleMap/GoogleMap";
+import GoogleMap from "./GoogleMap/GoogleMap/Geolocation";
 
 export default function Data() {
   const { scrapes } = useContext(ScrapeContext);
-  return (
+  return scrapes.olxScrape.length ? (
     <div className="App-wrapper">
       <div className="offers-wrapper">
         {scrapes.olxScrape.map(scrape => (
@@ -33,7 +33,9 @@ export default function Data() {
           </a>
         ))}
       </div>
-      <GoogleMap />
+      <GoogleMap scrapes={scrapes} />
     </div>
+  ) : (
+    <span>Loading</span>
   );
 }

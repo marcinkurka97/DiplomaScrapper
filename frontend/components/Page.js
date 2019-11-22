@@ -6,7 +6,7 @@ function useScrapes() {
   const [scrapes, setScrapes] = useState({ olxScrape: [] });
   useEffect(function() {
     (async () => {
-      const res = await fetch("http://localhost:2093/data");
+      const res = await fetch("http://localhost:2094/data");
       const data = await res.json();
 
       setScrapes({ olxScrape: data });

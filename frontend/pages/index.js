@@ -1,6 +1,6 @@
 import Page from "../components/Page";
 import Data from "../components/Data";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 
 export default function Home() {
   return (
