@@ -27,12 +27,27 @@ export class GoogleMap extends React.PureComponent {
     },
     clusters: [],
     markers: [],
-    showInfoWindow: false,
+    showingInfoWindow: false,
+    activeMarker: {},
+    selectedPlace: {}
   };
 
-  onChildClick = (key, childProps) => {
-    this.setState({showInfoWindow: !this.state.showInfoWindow})
+  onMarkerClick = (props, marker, e) => {
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: !this.state.showingInfoWindow
+    });
   }
+
+  onMapClicked = props => {
+    if (this.state.showingInfoWindow) {
+      this.setState({
+        showingInfoWindow: false,
+        activeMarker: null
+      });
+    }
+  };
 
   componentDidMount() {
     this.getScrapeData(this.props.scrapes);
@@ -103,8 +118,9 @@ export class GoogleMap extends React.PureComponent {
           defaultCenter={this.props.myLatLng}
           options={MAP.options}
           onChange={this.handleMapChange}
-          onChildClick={this.onChildClick}
+          onClick={this.onMapClicked}
           yesIWantToUseGoogleMapApiInternals
+          onChildClick={this.onMarkerClick}
           bootstrapURLKeys={{ key: "AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE" }}
         >
           {this.state.clusters.map(item => {
@@ -112,13 +128,16 @@ export class GoogleMap extends React.PureComponent {
               return (
                 <Marker
                   key={item.id}
+                  keyId={item.id}
                   lat={item.points[0].lat}
                   lng={item.points[0].lng}
                   markerImg={item.points[0].markerImg}
                   markerTitle={item.points[0].markerTitle}
                   markerPrice={item.points[0].markerPrice}
                   markerLink={item.points[0].markerLink}
-                  showInfoWindow={this.state.showInfoWindow}
+                  showingInfoWindow={this.state.showingInfoWindow}
+                  activeMarker={this.state.activeMarker}
+                  selectedPlace={this.state.selectedPlace}
                 />
               );
             }

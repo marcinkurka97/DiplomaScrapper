@@ -5,24 +5,42 @@ import Marker from "../Marker/Marker";
 import styled from "styled-components";
 
 const MarkerCounter = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 8px;
-  margin-left: -10px;
+  height: 46px;
+  padding: 0 10px 0 5px;
   text-align: center;
   font-size: 14px;
   font-weight: 700;
   color: #000;
-  border-radius: 50%;
+  border-bottom-right-radius: 100px;
+  border-top-right-radius: 100px;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
   background-color: #fff;
+  left: -10%;
+  z-index: -1;
+
+  &:before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 25px;
+    left: -52%;
+    background: #fff;
+    z-index: -2;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+  }
 `;
 
 const MarkerGroup = styled.div`
   display: flex;
-  width: ${props => (props.length === 2 ? "55px" : "80px")};
+  align-items: center;
+  width: 70px;
 `;
 
 class ClusterMarker extends React.PureComponent {

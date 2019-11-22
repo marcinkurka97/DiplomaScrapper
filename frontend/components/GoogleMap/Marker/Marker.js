@@ -7,8 +7,8 @@ const MarkerInGroupStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 36px;
-  height: 36px;
+  width: 50x;
+  height: 50px;
   margin-left: -7px;
   font-size: 14px;
   color: #fff;
@@ -19,14 +19,17 @@ const MarkerStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   font-size: 14px;
   color: #fff;
   text-transform: uppercase;
-  transition: transform 0.3s;
 
-  &:hover {
+  svg {
+    transition: transform 0.3s;
+  }
+
+  svg:hover {
     transform: scale(1.2);
   }
 `;
@@ -42,18 +45,32 @@ class Marker extends React.PureComponent {
       <div>
         {this.props.inGroup ? (
           <MarkerInGroupStyled>
-            <HomeIcon scale="0.55" />
+            <HomeIcon />
           </MarkerInGroupStyled>
         ) : (
           <MarkerStyled>
-            <HomeIcon scale="0.55" />
-            {this.props.showInfoWindow && (
-              <div
-                style={{
-                  width: '100px',
-                  height: '100px'
-                }}
-              >Info window</div>
+            <HomeIcon />
+            {this.props.showingInfoWindow && this.props.keyId === this.props.selectedPlace && (
+              <div className="marker-window">
+                <img
+                  className="marker-window__img"
+                  src={this.props.markerImg}
+                />
+                <div className="marker-window__right">
+                  <h4 className="marker-window__right__title">
+                    {this.props.markerTitle}
+                  </h4>
+                  <p className="marker-window__right__price">
+                    {this.props.markerPrice}
+                  </p>
+                  <a
+                    className="marker-window__right__link"
+                    href={this.props.markerLink}
+                  >
+                    Przejdź do oferty
+                  </a>
+                </div>
+              </div>
             )}
           </MarkerStyled>
         )}
