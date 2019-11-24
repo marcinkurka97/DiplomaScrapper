@@ -1,12 +1,10 @@
 import Page from "../components/Page";
-import Data from "../components/Data";
-import Header from "../components/Header/Header";
+import App from "../components/App";
 
 export default function Home() {
   return (
     <Page>
-      <Header />
-      <Data />
+      <App />
     </Page>
   );
 }

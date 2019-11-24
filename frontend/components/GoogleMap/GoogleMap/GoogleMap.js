@@ -7,19 +7,20 @@ import styled from "styled-components";
 
 const MapWrapper = styled.div`
   position: relative;
-  width: 60vw;
+  width: 50vw;
   height: 100%;
 `;
 
+// Default options for Google Maps
 const MAP = {
   defaultZoom: 8,
   options: {
+    minZoom: 6,
     maxZoom: 24
   }
 };
 
 export class GoogleMap extends React.PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
   state = {
     mapOptions: {
       center: this.props.myLatLng,
@@ -32,14 +33,16 @@ export class GoogleMap extends React.PureComponent {
     selectedPlace: {}
   };
 
+  // Event handler for clicking on Marker (showing Info Window)
   onMarkerClick = (props, marker, e) => {
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
       showingInfoWindow: !this.state.showingInfoWindow
     });
-  }
+  };
 
+  // Event handler for clickich on map (hiding Info Window)
   onMapClicked = props => {
     if (this.state.showingInfoWindow) {
       this.setState({
@@ -49,21 +52,35 @@ export class GoogleMap extends React.PureComponent {
     }
   };
 
+  // Load data on component mount
   componentDidMount() {
     this.getScrapeData(this.props.scrapes);
   }
 
-  getScrapeData = props => {
+  // Rerender when new orders are added to list
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.scrapes[prevProps.scrapes.length - 1].id !==
+      this.props.scrapes[this.props.scrapes.length - 1].id
+    ) {
+      this.getScrapeData(this.props.scrapes);
+    }
+  }
+
+  // Create markers object array (provided via props)
+  getScrapeData = offers => {
     const markersData = [];
-    props.olxScrape.map((offer, index) => {
+    offers.map((offer, index) => {
       markersData.push({
         id: index,
         lat: offer.lat,
         lng: offer.long,
+        markerId: offer.id,
         markerImg: offer.img,
         markerTitle: offer.title,
         markerPrice: offer.price,
-        markerLink: offer.link
+        markerLink: offer.link,
+        markerType: offer.type
       });
     });
 
@@ -71,6 +88,7 @@ export class GoogleMap extends React.PureComponent {
     return markersData;
   };
 
+  // Creating superclusters array from markers array
   getClusters = () => {
     const clusters = supercluster(this.state.markers, {
       minZoom: 0,
@@ -81,6 +99,7 @@ export class GoogleMap extends React.PureComponent {
     return clusters(this.state.mapOptions);
   };
 
+  // Filling clusters state with data from supercluster
   createClusters = props => {
     this.setState({
       clusters: this.state.mapOptions.bounds
@@ -95,6 +114,7 @@ export class GoogleMap extends React.PureComponent {
     });
   };
 
+  // On every map change (zoom, dragging) rerender displayed clusters
   handleMapChange = ({ center, zoom, bounds }) => {
     this.setState(
       {
@@ -122,7 +142,10 @@ export class GoogleMap extends React.PureComponent {
           yesIWantToUseGoogleMapApiInternals
           onChildClick={this.onMarkerClick}
           bootstrapURLKeys={{ key: "AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE" }}
+          style={{ zIndex: 5 }}
+          center={this.props.center}
         >
+          {/* If there is only 1 marker nearby place Marker on map */}
           {this.state.clusters.map(item => {
             if (item.numPoints === 1) {
               return (
@@ -131,17 +154,22 @@ export class GoogleMap extends React.PureComponent {
                   keyId={item.id}
                   lat={item.points[0].lat}
                   lng={item.points[0].lng}
+                  markerId={item.points[0].markerId}
                   markerImg={item.points[0].markerImg}
                   markerTitle={item.points[0].markerTitle}
                   markerPrice={item.points[0].markerPrice}
                   markerLink={item.points[0].markerLink}
+                  markerType={item.points[0].markerType}
                   showingInfoWindow={this.state.showingInfoWindow}
                   activeMarker={this.state.activeMarker}
                   selectedPlace={this.state.selectedPlace}
+                  hoverState={this.props.hoverState}
+                  hoverIdState={this.props.hoverIdState}
                 />
               );
             }
 
+            // If there is more than 1 marker nearby place cluster on map instead
             return (
               <ClusterMarker
                 key={item.id}

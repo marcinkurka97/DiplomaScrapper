@@ -8,6 +8,7 @@ import db from "./lib/db";
 const app = express();
 app.use(cors());
 
+// End point for frontend to receive scrape data
 app.get("/scrape", async (req, res, next) => {
   console.log("Scraping!");
   const offersPromise = await getOffersObj();
@@ -22,6 +23,6 @@ app.get("/data", async (req, res, next) => {
   res.json(olxScrapes);
 });
 
-app.listen(2094, () =>
-  console.log(`App running on port http://localhost:2094`)
+app.listen(2093, () =>
+  console.log(`App running on port http://localhost:2093`)
 );

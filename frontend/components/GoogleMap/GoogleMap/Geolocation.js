@@ -14,8 +14,14 @@ class Geolocation extends React.Component {
 
   componentDidMount() {
     this.getLocation();
+    this.sendDataToParent();
   }
 
+  sendDataToParent = () => {
+    this.props.parentCallback(this.state.myLatLng);
+  };
+
+  // Get current location if user agrees to share his location
   getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -27,6 +33,7 @@ class Geolocation extends React.Component {
         });
       });
     } else {
+      // If geolocation isn't working on current browser or user decline to share location, set default location to Katowice
       this.setState({
         myLatLng: {
           lat: 50.264821,
@@ -38,7 +45,13 @@ class Geolocation extends React.Component {
 
   render() {
     return (
-      <GoogleMap myLatLng={this.state.myLatLng} scrapes={this.props.scrapes} />
+      <GoogleMap
+        myLatLng={this.state.myLatLng}
+        scrapes={this.props.scrapes}
+        hoverState={this.props.hoverState}
+        hoverIdState={this.props.hoverIdState}
+        center={this.props.center}
+      />
     );
   }
 }

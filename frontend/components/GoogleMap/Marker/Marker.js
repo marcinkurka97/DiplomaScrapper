@@ -43,35 +43,44 @@ class Marker extends React.PureComponent {
   render() {
     return (
       <div>
+        {/* If there is more than 1 marker nearby create group with marker icon and '+quantinty' */}
         {this.props.inGroup ? (
           <MarkerInGroupStyled>
             <HomeIcon />
           </MarkerInGroupStyled>
         ) : (
-          <MarkerStyled>
-            <HomeIcon />
-            {this.props.showingInfoWindow && this.props.keyId === this.props.selectedPlace && (
-              <div className="marker-window">
-                <img
-                  className="marker-window__img"
-                  src={this.props.markerImg}
-                />
-                <div className="marker-window__right">
-                  <h4 className="marker-window__right__title">
-                    {this.props.markerTitle}
-                  </h4>
-                  <p className="marker-window__right__price">
-                    {this.props.markerPrice}
-                  </p>
-                  <a
-                    className="marker-window__right__link"
-                    href={this.props.markerLink}
-                  >
-                    Przejdź do oferty
-                  </a>
+          <MarkerStyled
+            className={
+              this.props.hoverState &&
+              this.props.hoverIdState === this.props.markerId
+                ? "animated-marker"
+                : ""
+            }
+          >
+            <HomeIcon colorType={this.props.markerType} />
+            {this.props.showingInfoWindow &&
+              this.props.keyId === this.props.selectedPlace && (
+                <div className="marker-window">
+                  <img
+                    className="marker-window__img"
+                    src={this.props.markerImg}
+                  />
+                  <div className="marker-window__right">
+                    <h4 className="marker-window__right__title">
+                      {this.props.markerTitle}
+                    </h4>
+                    <p className="marker-window__right__price">
+                      {this.props.markerPrice}
+                    </p>
+                    <a
+                      className="marker-window__right__link"
+                      href={this.props.markerLink}
+                    >
+                      Przejdź do oferty
+                    </a>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </MarkerStyled>
         )}
       </div>

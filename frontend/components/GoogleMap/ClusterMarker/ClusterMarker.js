@@ -25,7 +25,7 @@ const MarkerCounter = styled.div`
   z-index: -1;
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     height: 100%;
     width: 25px;
@@ -51,6 +51,7 @@ class ClusterMarker extends React.PureComponent {
 
   render() {
     return (
+      // Creating marker group with HomeIcon and Quantity
       <MarkerGroup length={this.props.points.length}>
         {this.state.clusterFaceMarkers.map(marker => (
           <Marker
