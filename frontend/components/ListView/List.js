@@ -45,7 +45,8 @@ const OffersWrapper = styled.div`
         0 1px 5px 0 rgba(0, 0, 0, 0.04);
 
       &:hover {
-        transition: box-shadow 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transform: scale(1.0125);
+        transition: box-shadow, transform 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
         box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.07),
           0 3px 7px 0 rgba(0, 0, 0, 0.06);
       }

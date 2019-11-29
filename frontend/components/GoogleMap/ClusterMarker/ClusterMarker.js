@@ -52,7 +52,17 @@ class ClusterMarker extends React.PureComponent {
   render() {
     return (
       // Creating marker group with HomeIcon and Quantity
-      <MarkerGroup length={this.props.points.length}>
+      <MarkerGroup
+        length={this.props.points.length}
+        className={
+          this.props.hoverState &&
+          this.props.points.some(
+            obj => obj.markerId === this.props.hoverIdState
+          )
+            ? "animated-marker"
+            : ""
+        }
+      >
         {this.state.clusterFaceMarkers.map(marker => (
           <Marker
             key={marker.id}

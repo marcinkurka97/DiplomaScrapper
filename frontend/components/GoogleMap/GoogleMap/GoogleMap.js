@@ -38,7 +38,7 @@ export class GoogleMap extends React.PureComponent {
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
-      showingInfoWindow: !this.state.showingInfoWindow
+      showingInfoWindow: true
     });
   };
 
@@ -131,6 +131,7 @@ export class GoogleMap extends React.PureComponent {
   };
 
   render() {
+    console.log(this.props.scrapes);
     return (
       <MapWrapper>
         <GoogleMapReact
@@ -176,6 +177,8 @@ export class GoogleMap extends React.PureComponent {
                 lat={item.lat}
                 lng={item.lng}
                 points={item.points}
+                hoverState={this.props.hoverState}
+                hoverIdState={this.props.hoverIdState}
               />
             );
           })}

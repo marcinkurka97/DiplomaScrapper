@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import HomeIcon from "../HomeIcon";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 
 const MarkerInGroupStyled = styled.div`
   display: flex;
@@ -34,6 +34,85 @@ const MarkerStyled = styled.div`
   }
 `;
 
+const scaleInCenter = keyframes`
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+const scaleOutCenter = keyframes`
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+`;
+
+const MarkerInfoWindowWrapper = styled.div`
+  position: relative;
+  left: -150px;
+  top: -160px;
+  min-width: 350px;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  transition: all 1s ease-out;
+  animation: ${scaleInCenter} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  z-index: 10;
+
+  .marker-window__img {
+    width: 40%;
+    height: 100%;
+  }
+
+  .marker-window__right {
+    width: 55%;
+    height: 100%;
+    padding: 0 2.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #000;
+
+    .marker-window__title {
+      font-size: 12px;
+    }
+
+    .marker-window__price {
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .marker-window__link {
+      font-size: 14px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.2s ease-in;
+
+      &:hover {
+        color: #6d6d6d;
+      }
+    }
+  }
+`;
+
 class Marker extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
   static defaultProps = {
@@ -58,31 +137,28 @@ class Marker extends React.PureComponent {
             }
           >
             <HomeIcon colorType={this.props.markerType} />
-            {this.props.showingInfoWindow &&
-              this.props.keyId === this.props.selectedPlace && (
-                <div className="marker-window">
-                  <img
-                    className="marker-window__img"
-                    src={this.props.markerImg}
-                  />
-                  <div className="marker-window__right">
-                    <h4 className="marker-window__right__title">
-                      {this.props.markerTitle}
-                    </h4>
-                    <p className="marker-window__right__price">
-                      {this.props.markerPrice}
-                    </p>
-                    <a
-                      className="marker-window__right__link"
-                      href={this.props.markerLink}
-                    >
-                      Przejdź do oferty
-                    </a>
-                  </div>
-                </div>
-              )}
           </MarkerStyled>
         )}
+        {this.props.showingInfoWindow &&
+          this.props.keyId === this.props.selectedPlace && (
+            <MarkerInfoWindowWrapper>
+              <img className="marker-window__img" src={this.props.markerImg} />
+              <div className="marker-window__right">
+                <h4 className="marker-window__right__title">
+                  {this.props.markerTitle}
+                </h4>
+                <p className="marker-window__right__price">
+                  {this.props.markerPrice}
+                </p>
+                <a
+                  className="marker-window__right__link"
+                  href={this.props.markerLink}
+                >
+                  Przejdź do oferty
+                </a>
+              </div>
+            </MarkerInfoWindowWrapper>
+          )}
       </div>
     );
   }
