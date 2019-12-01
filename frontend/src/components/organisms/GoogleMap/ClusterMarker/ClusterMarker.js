@@ -55,6 +55,9 @@ const bounce = keyframes`
 `;
 
 const MarkerGroup = styled.div`
+  position: relative;
+  top: -48px;
+  left: -17px;
   display: flex;
   align-items: center;
   width: 70px;

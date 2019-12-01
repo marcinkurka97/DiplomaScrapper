@@ -5,9 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../theme/GlobalStyle';
 import { theme } from '../theme/mainTheme';
 
-const MainTemplate = () => {
-  const { children } = this.props;
-
+const MainTemplate = ({ children }) => {
   return (
     <div>
       <GlobalStyle />

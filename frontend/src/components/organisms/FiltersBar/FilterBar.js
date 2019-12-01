@@ -7,6 +7,7 @@ import 'rc-slider/assets/index.css';
 import { theme } from '../../../theme/mainTheme';
 
 const FilterBarWrapper = styled.div`
+  position: relative;
   height: 17.5vh;
   background: ${theme.light};
   display: flex;
@@ -25,6 +26,14 @@ const FilterBarRowOne = styled.div`
 const StyledButton = styled(Button)`
   margin: 0 15px 0 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  background: ${({ theme, active, rent, sell, swap }) =>
+    active && rent
+      ? theme.orange
+      : active && sell
+      ? theme.green
+      : active && swap
+      ? theme.blue
+      : 'initial'};
 
   &:hover {
     background: ${({ theme, rent, sell, swap }) =>
@@ -53,7 +62,7 @@ class FilterBar extends React.Component {
     this.state = {};
   }
 
-  percentFormatter(v) {
+  distanceFormater(v) {
     return `Odległość: ${v} km`;
   }
 
@@ -61,23 +70,43 @@ class FilterBar extends React.Component {
     return (
       <FilterBarWrapper>
         <FilterBarRowOne>
-          <StyledButton rent dark>
+          <StyledButton
+            swap
+            dark
+            onClick={() => this.props.filterByType('All')}
+            active={this.props.currentActiveType === 'All'}
+          >
             All
           </StyledButton>
-          <StyledButton rent dark>
+          <StyledButton
+            rent
+            dark
+            onClick={() => this.props.filterByType('Mieszkania » Wynajem')}
+            active={this.props.currentActiveType === 'Mieszkania » Wynajem'}
+          >
             Wynajem
           </StyledButton>
-          <StyledButton sell dark>
+          <StyledButton
+            sell
+            dark
+            onClick={() => this.props.filterByType('Mieszkania » Sprzedaż')}
+            active={this.props.currentActiveType === 'Mieszkania » Sprzedaż'}
+          >
             Sprzedaż
           </StyledButton>
-          <StyledButton swap dark>
+          <StyledButton
+            swap
+            dark
+            onClick={() => this.props.filterByType('Mieszkania » Zamiana')}
+            active={this.props.currentActiveType === 'Mieszkania » Zamiana'}
+          >
             Zamiana
           </StyledButton>
         </FilterBarRowOne>
         <FilterBarRowTwo>
-          <Input placeholder="Search" search />
+          <Input ref="searchInput" placeholder="Search" search />
           <StyledSliderWithTooltip
-            tipFormatter={this.percentFormatter}
+            tipFormatter={this.distanceFormater}
             tipProps={{ overlayClassName: 'foo' }}
             min={1}
             max={20}

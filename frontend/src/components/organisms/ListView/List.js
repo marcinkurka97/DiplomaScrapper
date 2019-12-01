@@ -1,7 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { theme } from '../../../theme/mainTheme';
+
+const slideInBottom = keyframes`
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
 
 const OffersWrapper = styled.div`
   height: 100%;
@@ -32,6 +43,7 @@ const OffersWrapper = styled.div`
   .offer-container {
     text-decoration: none;
     color: #5a6371;
+    overflow-y: hidden;
 
     .offer {
       width: 97.5%;
@@ -43,6 +55,7 @@ const OffersWrapper = styled.div`
       border-radius: 6px;
       background: #fff;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+      animation: ${slideInBottom} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 
       &:hover {
         transform: scale(1.0125);
@@ -115,9 +128,12 @@ class List extends React.Component {
   }
 
   loadItems() {
-    const offersArr = this.props.scrapes.slice(0, this.props.offers.length + OFFERS_CHUNK);
+    const offersArr = this.props.filteredHomeOffers.slice(
+      0,
+      this.props.offers.length + OFFERS_CHUNK,
+    );
 
-    if (this.props.offers.length >= this.props.scrapes.length) {
+    if (this.props.offers.length >= this.props.filteredHomeOffers.length) {
       this.setState({ hasMore: false });
     } else {
       this.props.handleSettingOffersState(offersArr);
@@ -133,51 +149,54 @@ class List extends React.Component {
           hasMore={this.state.hasMore}
           loader={<h4>Loading...</h4>}
           scrollableTarget="listWrapper"
+          style={{ overflowY: 'hidden' }}
         >
-          {this.props.offers.map(scrape => (
-            <a
-              className="offer-container"
-              href={scrape.link}
-              id={scrape.id}
-              key={scrape.id}
-              onMouseEnter={() => this.props.onMouseEnter(scrape.id, scrape.lat, scrape.long)}
-              onMouseLeave={() => this.props.onMouseLeave()}
-            >
-              <div className="offer">
-                <div
-                  className="offer__border"
-                  style={{
-                    backgroundColor:
-                      scrape.type === 'Mieszkania » Wynajem'
-                        ? theme.orange
-                        : scrape.type === 'Mieszkania » Sprzedaż'
-                        ? theme.green
-                        : scrape.type === 'Mieszkania » Zamiana'
-                        ? theme.blue
-                        : theme.orange,
-                  }}
-                />
-                <div
-                  className="offer__img"
-                  style={{
-                    background:
-                      scrape.img !== undefined
-                        ? `url(${scrape.img})`
-                        : 'url(https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png)',
-                  }}
-                />
-                <div className="offers__desc-container">
-                  <h4 className="offer__title">{scrape.title}</h4>
-                  <div className="offer__desc">
-                    <p className="offer__localization">{scrape.localization}</p>
-                    <p className="offer__type">{scrape.type}</p>
-                    <p className="offer__date">{scrape.date}</p>
+          {this.props.filteredHomeOffers.map(scrape => {
+            return (
+              <a
+                className="offer-container"
+                href={scrape.link}
+                id={scrape.id}
+                key={scrape.id}
+                onMouseEnter={() => this.props.onMouseEnter(scrape.id, scrape.lat, scrape.long)}
+                onMouseLeave={() => this.props.onMouseLeave()}
+              >
+                <div className="offer">
+                  <div
+                    className="offer__border"
+                    style={{
+                      backgroundColor:
+                        scrape.type === 'Mieszkania » Wynajem'
+                          ? theme.orange
+                          : scrape.type === 'Mieszkania » Sprzedaż'
+                          ? theme.green
+                          : scrape.type === 'Mieszkania » Zamiana'
+                          ? theme.blue
+                          : theme.orange,
+                    }}
+                  />
+                  <div
+                    className="offer__img"
+                    style={{
+                      background:
+                        scrape.img !== undefined
+                          ? `url(${scrape.img})`
+                          : 'url(https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png)',
+                    }}
+                  />
+                  <div className="offers__desc-container">
+                    <h4 className="offer__title">{scrape.title}</h4>
+                    <div className="offer__desc">
+                      <p className="offer__localization">{scrape.localization}</p>
+                      <p className="offer__type">{scrape.type}</p>
+                      <p className="offer__date">{scrape.date}</p>
+                    </div>
                   </div>
+                  <p className="offer__price">{scrape.price}</p>
                 </div>
-                <p className="offer__price">{scrape.price}</p>
-              </div>
-            </a>
-          ))}
+              </a>
+            );
+          })}
         </InfiniteScroll>
       </OffersWrapper>
     );

@@ -4,6 +4,7 @@ import supercluster from 'points-cluster';
 import styled from 'styled-components';
 import Marker from '../Marker/Marker';
 import ClusterMarker from '../ClusterMarker/ClusterMarker';
+import SearchBox from './SearchBox';
 
 const MapWrapper = styled.div`
   position: relative;
@@ -21,17 +22,26 @@ const MAP = {
 };
 
 export class GoogleMap extends React.PureComponent {
-  state = {
-    mapOptions: {
-      center: this.props.myLatLng,
-      zoom: MAP.defaultZoom,
-    },
-    clusters: [],
-    markers: [],
-    showingInfoWindow: false,
-    activeMarker: {},
-    selectedPlace: {},
-  };
+  constructor(props) {
+    super(props);
+
+    this.searchbar = React.createRef();
+
+    this.state = {
+      mapOptions: {
+        center: this.props.myLatLng,
+        zoom: MAP.defaultZoom,
+      },
+      clusters: [],
+      markers: [],
+      showingInfoWindow: false,
+      activeMarker: {},
+      selectedPlace: {},
+      mapsApiLoaded: false,
+      mapInstance: null,
+      mapsapi: null,
+    };
+  }
 
   // Event handler for clicking on Marker (showing Info Window)
   onMarkerClick = (props, marker, e) => {
@@ -59,10 +69,7 @@ export class GoogleMap extends React.PureComponent {
 
   // Rerender when new orders are added to list
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.scrapes[prevProps.scrapes.length - 1].id !==
-      this.props.scrapes[this.props.scrapes.length - 1].id
-    ) {
+    if (prevProps.scrapes !== this.props.scrapes) {
       this.getScrapeData(this.props.scrapes);
     }
   }
@@ -131,6 +138,27 @@ export class GoogleMap extends React.PureComponent {
     );
   };
 
+  apiIsLoaded = (map, maps, center) => {
+    map.controls[maps.ControlPosition.TOP_LEFT].push(this.searchbar.current);
+
+    this.setState({
+      mapsApiLoaded: true,
+      mapInstance: map,
+      mapsapi: maps,
+    });
+
+    new maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.3,
+      map,
+      center: center,
+      radius: 60000,
+    });
+  };
+
   render() {
     return (
       <MapWrapper>
@@ -142,11 +170,21 @@ export class GoogleMap extends React.PureComponent {
           onClick={this.onMapClicked}
           yesIWantToUseGoogleMapApiInternals
           onChildClick={this.onMarkerClick}
-          bootstrapURLKeys={{ key: 'AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE' }}
+          bootstrapURLKeys={{
+            key: 'AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE',
+            libraries: ['places', 'drawing'],
+          }}
           style={{ zIndex: 5 }}
           center={this.props.center}
+          onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps, this.props.center)}
         >
           {/* If there is only 1 marker nearby place Marker on map */}
+          <div ref={this.searchbar}>
+            {this.state.mapsApiLoaded && (
+              <SearchBox map={this.state.mapInstance} mapsapi={this.state.mapsapi} />
+            )}
+          </div>
+
           {this.state.clusters.map(item => {
             if (item.numPoints === 1) {
               return (
