@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import Slider, { createSliderWithTooltip } from 'rc-slider';
-import Input from '../../atoms/Input/Input';
 import Button from '../../atoms/Button/Button';
-import 'rc-slider/assets/index.css';
 import { theme } from '../../../theme/mainTheme';
+import SearchBox from '../GoogleMap/GoogleMap/SearchBox';
 
 const FilterBarWrapper = styled.div`
   position: relative;
@@ -25,7 +23,7 @@ const FilterBarRowOne = styled.div`
 
 const StyledButton = styled(Button)`
   margin: 0 15px 0 0;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
   background: ${({ theme, active, rent, sell, swap }) =>
     active && rent
       ? theme.orange
@@ -49,21 +47,10 @@ const FilterBarRowTwo = styled.div`
   align-items: center;
 `;
 
-const SliderWithTooltip = createSliderWithTooltip(Slider);
-
-const StyledSliderWithTooltip = styled(SliderWithTooltip)`
-  width: 10% !important;
-  margin: 0 0 0 20px;
-`;
-
 class FilterBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-  }
-
-  distanceFormater(v) {
-    return `Odległość: ${v} km`;
   }
 
   render() {
@@ -104,24 +91,13 @@ class FilterBar extends React.Component {
           </StyledButton>
         </FilterBarRowOne>
         <FilterBarRowTwo>
-          <Input ref="searchInput" placeholder="Search" search />
-          <StyledSliderWithTooltip
-            tipFormatter={this.distanceFormater}
-            tipProps={{ overlayClassName: 'foo' }}
-            min={1}
-            max={20}
-            step={0.5}
-            defaultValue={2}
-            trackStyle={{ backgroundColor: theme.blue, height: 10 }}
-            handleStyle={{
-              border: 0,
-              height: 24,
-              width: 24,
-              marginTop: -7,
-              backgroundColor: theme.blue,
-            }}
-            railStyle={{ backgroundColor: '#dfe0df', height: 10 }}
-          />
+          {this.props.mapsApiLoaded && (
+            <SearchBox
+              mapInstance={this.props.mapInstance}
+              mapsapi={this.props.mapsapi}
+              filterByDistance={this.props.filterByDistance}
+            />
+          )}
         </FilterBarRowTwo>
       </FilterBarWrapper>
     );

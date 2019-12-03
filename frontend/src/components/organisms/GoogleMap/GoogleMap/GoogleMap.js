@@ -4,7 +4,6 @@ import supercluster from 'points-cluster';
 import styled from 'styled-components';
 import Marker from '../Marker/Marker';
 import ClusterMarker from '../ClusterMarker/ClusterMarker';
-import SearchBox from './SearchBox';
 
 const MapWrapper = styled.div`
   position: relative;
@@ -25,8 +24,6 @@ export class GoogleMap extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.searchbar = React.createRef();
-
     this.state = {
       mapOptions: {
         center: this.props.myLatLng,
@@ -37,9 +34,6 @@ export class GoogleMap extends React.PureComponent {
       showingInfoWindow: false,
       activeMarker: {},
       selectedPlace: {},
-      mapsApiLoaded: false,
-      mapInstance: null,
-      mapsapi: null,
     };
   }
 
@@ -64,13 +58,13 @@ export class GoogleMap extends React.PureComponent {
 
   // Load data on component mount
   componentDidMount() {
-    this.getScrapeData(this.props.scrapes);
+    this.getScrapeData(this.props.filteredHomeOffers);
   }
 
   // Rerender when new orders are added to list
   componentDidUpdate(prevProps) {
-    if (prevProps.scrapes !== this.props.scrapes) {
-      this.getScrapeData(this.props.scrapes);
+    if (prevProps.filteredHomeOffers !== this.props.filteredHomeOffers) {
+      this.getScrapeData(this.props.filteredHomeOffers);
     }
   }
 
@@ -138,25 +132,11 @@ export class GoogleMap extends React.PureComponent {
     );
   };
 
-  apiIsLoaded = (map, maps, center) => {
-    map.controls[maps.ControlPosition.TOP_LEFT].push(this.searchbar.current);
-
-    this.setState({
-      mapsApiLoaded: true,
-      mapInstance: map,
-      mapsapi: maps,
-    });
-
-    new maps.Circle({
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.3,
-      map,
-      center: center,
-      radius: 60000,
-    });
+  // Send data to parent component
+  apiIsLoaded = (map, maps) => {
+    this.props.setMapInstance(map);
+    this.props.setMapAPI(maps);
+    this.props.setMapsApiLoaded();
   };
 
   render() {
@@ -176,15 +156,9 @@ export class GoogleMap extends React.PureComponent {
           }}
           style={{ zIndex: 5 }}
           center={this.props.center}
-          onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps, this.props.center)}
+          onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps)}
         >
           {/* If there is only 1 marker nearby place Marker on map */}
-          <div ref={this.searchbar}>
-            {this.state.mapsApiLoaded && (
-              <SearchBox map={this.state.mapInstance} mapsapi={this.state.mapsapi} />
-            )}
-          </div>
-
           {this.state.clusters.map(item => {
             if (item.numPoints === 1) {
               return (

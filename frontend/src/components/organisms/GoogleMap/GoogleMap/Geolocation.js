@@ -47,10 +47,14 @@ class Geolocation extends React.Component {
     return (
       <GoogleMap
         myLatLng={this.state.myLatLng}
-        scrapes={this.props.scrapes}
+        filteredHomeOffers={this.props.filteredHomeOffers}
         hoverState={this.props.hoverState}
         hoverIdState={this.props.hoverIdState}
         center={this.props.center}
+        filterByDistance={this.props.filterByDistance}
+        setMapsApiLoaded={this.props.setMapsApiLoaded}
+        setMapInstance={this.props.setMapInstance}
+        setMapAPI={this.props.setMapAPI}
       />
     );
   }

@@ -101,38 +101,60 @@ class MainAppView extends React.Component {
       center: {},
       offers: [],
       currentActiveType: 'All',
+      isAlreadyFiltered: false,
+      mapsApiLoaded: false,
+      mapInstance: null,
+      mapsapi: null,
     };
   }
 
+  // Assign props from redux to state
   static getDerivedStateFromProps(props, state) {
     if (state.offers.length === 0) {
       state.offers = props.homeOffers.slice(0, OFFERS_CHUNK);
     }
-    state.homeOffers = props.homeOffers;
+    state.homeOffers = props.homeOffers.slice(0, 50);
 
     return props.homeOffers;
   }
 
+  // Call to redux reducer
   componentDidMount() {
     const { fetchHomeOffers } = this.props;
     fetchHomeOffers();
   }
 
+  // Initial jill filtered array with whole array
   componentDidUpdate() {
     if (this.state.filteredHomeOffers.length === 0) {
       this.setState({ filteredHomeOffers: this.state.homeOffers });
     }
   }
 
+  // Helper functions (state setters)
+  setMapsApiLoaded = () => {
+    this.setState({ mapsApiLoaded: true });
+  };
+
+  setMapInstance = mapInst => {
+    this.setState({ mapInstance: mapInst });
+  };
+
+  setMapAPI = mapAPI => {
+    this.setState({ mapsapi: mapAPI });
+  };
+
   handleSettingOffersState = newOffers => {
     this.setState({ offers: newOffers });
   };
 
+  // Callback function from geolocation children
   callbackSettingGeolocation = childData => {
     this.setState({ geolocation: childData });
     this.setState({ center: childData });
   };
 
+  // Mouse enter handler for list view
   onMouseEnterHandler = (objId, objLat, objLng) => {
     if (!this.state.hover) {
       this.setState({ hover: true });
@@ -141,6 +163,7 @@ class MainAppView extends React.Component {
     }
   };
 
+  // Mouse leave handler for list view
   onMouseLeaveHandler = () => {
     if (this.state.hover) {
       this.setState({ hover: false });
@@ -148,27 +171,57 @@ class MainAppView extends React.Component {
     }
   };
 
+  // Filtering by offer type ('Wynajem','Sprzedaz','Zamiana')
   filterByType = offerType => {
     this.setState({ currentActiveType: offerType });
     if (offerType === 'All') {
       this.setState({ filteredHomeOffers: this.state.homeOffers });
+    } else {
+      const filteredOffers = this.state.homeOffers.filter(offer => {
+        return offer.type === offerType;
+      });
+      this.setState({ filteredHomeOffers: filteredOffers });
+      this.setState({ isAlreadyFiltered: true });
     }
+  };
 
+  // Check if markers are within radius range
+  filterByDistance = (mapsapi, radius, pinCenter) => {
     const filteredOffers = this.state.homeOffers.filter(offer => {
-      return offer.type === offerType;
+      const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
+        { lat: () => offer.lat, lng: () => offer.long },
+        pinCenter,
+      );
+
+      if (distanceFromCenter < radius) {
+        return offer;
+      }
+
+      return null;
     });
 
-    this.setState({ filteredHomeOffers: filteredOffers });
+    if (filteredOffers.length > 0) {
+      this.setState({ isAlreadyFiltered: true });
+      this.setState({ filteredHomeOffers: filteredOffers });
+    }
   };
 
   render() {
     return (
       <AppWrapper>
         <Header />
-        <FilterBar
-          filterByType={this.filterByType}
-          currentActiveType={this.state.currentActiveType}
-        />
+        {this.state.mapsApiLoaded ? (
+          <FilterBar
+            filterByType={this.filterByType}
+            filterByDistance={this.filterByDistance}
+            currentActiveType={this.state.currentActiveType}
+            mapsApiLoaded={this.state.mapsApiLoaded}
+            mapInstance={this.state.mapInstance}
+            mapsapi={this.state.mapsapi}
+          />
+        ) : (
+          'Loading'
+        )}
         {this.state.filteredHomeOffers.length > 0 ? (
           <ListAndMapWrapper>
             <List
@@ -179,21 +232,24 @@ class MainAppView extends React.Component {
               handleSettingOffersState={this.handleSettingOffersState}
             />
             <GoogleMap
-              scrapes={this.state.filteredHomeOffers}
+              filteredHomeOffers={this.state.filteredHomeOffers}
               hoverState={this.state.hover}
               hoverIdState={this.state.hoverId}
               center={this.state.center}
               parentCallback={this.callbackSettingGeolocation}
+              setMapsApiLoaded={this.setMapsApiLoaded}
+              setMapInstance={this.setMapInstance}
+              setMapAPI={this.setMapAPI}
             />
           </ListAndMapWrapper>
         ) : (
           <Loader>
             <div className="background" />
             <div className="lds-ring">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+              <div />
+              <div />
+              <div />
+              <div />
             </div>
           </Loader>
         )}
