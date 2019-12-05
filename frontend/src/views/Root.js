@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import MainAppView from './MainAppView';
 import LoginView from './LoginView';
+import RegisterView from './RegisterView';
 import MainTemplate from '../templates/MainTemplate';
 import store from '../store';
 
@@ -14,6 +15,7 @@ export default function Root() {
           <Switch>
             <Route exact path="/" component={MainAppView} />
             <Route exact path="/login" component={LoginView} />
+            <Route exact path="/register" component={RegisterView} />
           </Switch>
         </MainTemplate>
       </BrowserRouter>

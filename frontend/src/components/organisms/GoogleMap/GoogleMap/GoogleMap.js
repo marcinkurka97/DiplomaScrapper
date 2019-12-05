@@ -144,7 +144,11 @@ export class GoogleMap extends React.PureComponent {
       <MapWrapper>
         <GoogleMapReact
           defaultZoom={MAP.defaultZoom}
-          defaultCenter={this.props.myLatLng}
+          defaultCenter={{
+            lat: 50.264821,
+            lng: 19.01105,
+          }}
+          center={this.props.center}
           options={MAP.options}
           onChange={this.handleMapChange}
           onClick={this.onMapClicked}
@@ -155,7 +159,6 @@ export class GoogleMap extends React.PureComponent {
             libraries: ['places', 'drawing'],
           }}
           style={{ zIndex: 5 }}
-          center={this.props.center}
           onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps)}
         >
           {/* If there is only 1 marker nearby place Marker on map */}

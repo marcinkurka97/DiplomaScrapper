@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import { faHome, faStar, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../atoms/Button/Button';
 import Heading from '../../atoms/Heading/Heading';
@@ -48,11 +49,11 @@ export default function Header() {
         <LinkItem theme={theme} icon={faStar} linkTitle="Favourites" />
       </NavPanel>
       <LoginPanel>
-        <StyledButton bold color={theme.orange}>
-          Sign up
-        </StyledButton>
-        <StyledButton bold color={theme.green}>
+        <StyledButton as={NavLink} to="/login" bold color={theme.green}>
           Sign in
+        </StyledButton>
+        <StyledButton as={NavLink} to="/register" bold color={theme.orange}>
+          Sign up
         </StyledButton>
       </LoginPanel>
     </StyledHeader>

@@ -99,6 +99,10 @@ class MainAppView extends React.Component {
       hoverId: '',
       geolocation: {},
       center: {},
+      myLatLng: {
+        lat: 50.264821,
+        lng: 19.01105,
+      },
       offers: [],
       currentActiveType: 'All',
       isAlreadyFiltered: false,
@@ -124,7 +128,7 @@ class MainAppView extends React.Component {
     fetchHomeOffers();
   }
 
-  // Initial jill filtered array with whole array
+  // Initial fill filtered array with whole array
   componentDidUpdate() {
     if (this.state.filteredHomeOffers.length === 0) {
       this.setState({ filteredHomeOffers: this.state.homeOffers });
@@ -154,6 +158,9 @@ class MainAppView extends React.Component {
     this.setState({ center: childData });
   };
 
+  // Callback rerendering markers on Map
+  callbackRerenderMarkers = () => {};
+
   // Mouse enter handler for list view
   onMouseEnterHandler = (objId, objLat, objLng) => {
     if (!this.state.hover) {
@@ -168,6 +175,44 @@ class MainAppView extends React.Component {
     if (this.state.hover) {
       this.setState({ hover: false });
       this.setState({ hoverId: '' });
+    }
+  };
+
+  filterOffers = (offerType = 'All', mapsapi = null, radius = null, pinCenter = null) => {
+    this.setState({ currentActiveType: offerType });
+
+    const filteredOffers = this.state.homeOffers.filter(offer => {
+      // Filter by distance and type
+      if (mapsapi !== null && radius !== null && pinCenter !== null) {
+        const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
+          { lat: () => offer.lat, lng: () => offer.long },
+          pinCenter,
+        );
+
+        if (distanceFromCenter < radius - 100 && this.state.currentActiveType === 'All') {
+          return offer;
+        } else if (distanceFromCenter < radius - 100 && offer.type === offerType) {
+          return offer;
+        }
+        // Filter only by type
+      } else {
+        if (offerType === 'All') {
+          this.setState({ filteredHomeOffers: this.state.homeOffers });
+        } else {
+          const filteredOffers = this.state.homeOffers.filter(offer => {
+            return offer.type === offerType;
+          });
+          this.setState({ filteredHomeOffers: filteredOffers });
+          this.setState({ isAlreadyFiltered: true });
+        }
+      }
+
+      return null;
+    });
+
+    if (filteredOffers.length > 0) {
+      this.setState({ isAlreadyFiltered: true });
+      this.setState({ filteredHomeOffers: filteredOffers });
     }
   };
 
@@ -187,13 +232,15 @@ class MainAppView extends React.Component {
 
   // Check if markers are within radius range
   filterByDistance = (mapsapi, radius, pinCenter) => {
-    const filteredOffers = this.state.homeOffers.filter(offer => {
+    const filteredOffers = this.state.filteredHomeOffers.filter(offer => {
       const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
         { lat: () => offer.lat, lng: () => offer.long },
         pinCenter,
       );
 
-      if (distanceFromCenter < radius) {
+      if (distanceFromCenter < radius - 100 && this.state.currentActiveType === 'All') {
+        return offer;
+      } else if (distanceFromCenter < radius - 100 && offer.type === this.state.currentActiveType) {
         return offer;
       }
 

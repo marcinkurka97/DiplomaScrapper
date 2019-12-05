@@ -81,6 +81,41 @@ class ClusterMarker extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
   state = {
     clusterFaceMarkers: this.props.points.slice(0, 1),
+    colorType: '',
+  };
+
+  componentDidMount() {
+    this.mostMarkersTypeInCluster();
+  }
+
+  componentDidUpdate() {
+    this.mostMarkersTypeInCluster();
+  }
+
+  mostMarkersTypeInCluster = () => {
+    let rentCounter = 0;
+    let sellCounter = 0;
+    let swapCounter = 0;
+    this.props.points.map(point => {
+      if (point.markerType === 'Mieszkania » Wynajem') {
+        rentCounter++;
+      }
+      if (point.markerType === 'Mieszkania » Sprzedaż') {
+        sellCounter++;
+      }
+      if (point.markerType === 'Mieszkania » Zamiana') {
+        swapCounter++;
+      }
+      return null;
+    });
+
+    if (rentCounter > sellCounter && rentCounter > swapCounter) {
+      this.setState({ colorType: 'Mieszkania » Wynajem' });
+    } else if (sellCounter > rentCounter && sellCounter > swapCounter) {
+      this.setState({ colorType: 'Mieszkania » Sprzedaż' });
+    } else if (swapCounter > rentCounter && swapCounter > sellCounter) {
+      this.setState({ colorType: 'Mieszkania » Zamiana' });
+    }
   };
 
   render() {
@@ -94,7 +129,14 @@ class ClusterMarker extends React.PureComponent {
         points={this.props.points}
       >
         {this.state.clusterFaceMarkers.map(marker => (
-          <Marker key={marker.id} lat={marker.lat} lng={marker.lng} name={marker.id} inGroup />
+          <Marker
+            key={marker.id}
+            lat={marker.lat}
+            lng={marker.lng}
+            name={marker.id}
+            inGroup
+            colorType={this.state.colorType}
+          />
         ))}
         {this.props.points.length > 1 && (
           <MarkerCounter>+{this.props.points.length - 1}</MarkerCounter>

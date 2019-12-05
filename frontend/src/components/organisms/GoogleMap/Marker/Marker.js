@@ -142,7 +142,7 @@ class Marker extends React.PureComponent {
         {/* If there is more than 1 marker nearby create group with marker icon and '+quantinty' */}
         {this.props.inGroup ? (
           <MarkerInGroupStyled>
-            <HomeIcon />
+            <HomeIcon colorType={this.props.colorType} />
           </MarkerInGroupStyled>
         ) : (
           <MarkerStyled
