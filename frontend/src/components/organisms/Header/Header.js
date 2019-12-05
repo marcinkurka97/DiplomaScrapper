@@ -24,6 +24,7 @@ const LoginPanel = styled.div`
 const StyledButton = styled(Button)`
   margin: 0 10px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  border-radius: 0;
 `;
 
 const NavPanel = styled.div`
@@ -49,10 +50,10 @@ export default function Header() {
         <LinkItem theme={theme} icon={faStar} linkTitle="Favourites" />
       </NavPanel>
       <LoginPanel>
-        <StyledButton as={NavLink} to="/login" bold color={theme.green}>
+        <StyledButton color={theme.green} as={NavLink} to="/login">
           Sign in
         </StyledButton>
-        <StyledButton as={NavLink} to="/register" bold color={theme.orange}>
+        <StyledButton color={theme.orange} as={NavLink} to="/register">
           Sign up
         </StyledButton>
       </LoginPanel>

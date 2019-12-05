@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { connect } from 'react-redux';
+import debounce from 'lodash.debounce';
 import Header from '../components/organisms/Header/Header';
 import FilterBar from '../components/organisms/FiltersBar/FilterBar';
 import GoogleMap from '../components/organisms/GoogleMap/GoogleMap/Geolocation';
@@ -106,6 +107,10 @@ class MainAppView extends React.Component {
       offers: [],
       currentActiveType: 'All',
       isAlreadyFiltered: false,
+      price: {
+        min: 0,
+        max: Infinity,
+      },
       mapsApiLoaded: false,
       mapInstance: null,
       mapsapi: null,
@@ -178,43 +183,39 @@ class MainAppView extends React.Component {
     }
   };
 
-  filterOffers = (offerType = 'All', mapsapi = null, radius = null, pinCenter = null) => {
-    this.setState({ currentActiveType: offerType });
-
-    const filteredOffers = this.state.homeOffers.filter(offer => {
-      // Filter by distance and type
-      if (mapsapi !== null && radius !== null && pinCenter !== null) {
-        const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
-          { lat: () => offer.lat, lng: () => offer.long },
-          pinCenter,
-        );
-
-        if (distanceFromCenter < radius - 100 && this.state.currentActiveType === 'All') {
-          return offer;
-        } else if (distanceFromCenter < radius - 100 && offer.type === offerType) {
-          return offer;
-        }
-        // Filter only by type
-      } else {
-        if (offerType === 'All') {
-          this.setState({ filteredHomeOffers: this.state.homeOffers });
-        } else {
-          const filteredOffers = this.state.homeOffers.filter(offer => {
-            return offer.type === offerType;
-          });
-          this.setState({ filteredHomeOffers: filteredOffers });
-          this.setState({ isAlreadyFiltered: true });
-        }
+  priceChange = debounce(value => {
+    const currPrice = this.state.price;
+    if (Array.isArray(value)) {
+      this.setState(prevState => ({
+        price: {
+          ...prevState.price,
+          min: value[0] * 1000,
+          max: value[1] * 1000,
+        },
+      }));
+    } else {
+      if (value.dataset.min) {
+        this.setState(prevState => ({
+          price: {
+            ...prevState.price,
+            min: parseInt(value.value),
+            max: currPrice.max,
+          },
+        }));
       }
-
-      return null;
-    });
-
-    if (filteredOffers.length > 0) {
-      this.setState({ isAlreadyFiltered: true });
-      this.setState({ filteredHomeOffers: filteredOffers });
+      if (value.dataset.max) {
+        this.setState(prevState => ({
+          price: {
+            ...prevState.price,
+            min: currPrice.min,
+            max: parseInt(value.value),
+          },
+        }));
+      }
     }
-  };
+
+    this.filterByPrice();
+  }, 1000);
 
   // Filtering by offer type ('Wynajem','Sprzedaz','Zamiana')
   filterByType = offerType => {
@@ -227,6 +228,31 @@ class MainAppView extends React.Component {
       });
       this.setState({ filteredHomeOffers: filteredOffers });
       this.setState({ isAlreadyFiltered: true });
+    }
+  };
+
+  // Filtering by offer price
+  filterByPrice = () => {
+    const filteredOffers = this.state.homeOffers.filter(offer => {
+      const splited = offer.price.split(' ');
+      const intPrice = parseInt(splited.join(''));
+
+      if (
+        intPrice === intPrice &&
+        intPrice >= this.state.price.min &&
+        intPrice <= this.state.price.max
+      ) {
+        return offer;
+      }
+
+      return null;
+    });
+
+    if (filteredOffers.length > 0) {
+      this.setState({ filteredHomeOffers: filteredOffers });
+      this.setState({ isAlreadyFiltered: true });
+    } else {
+      this.setState({ filteredHomeOffers: [0] });
     }
   };
 
@@ -247,10 +273,8 @@ class MainAppView extends React.Component {
       return null;
     });
 
-    if (filteredOffers.length > 0) {
-      this.setState({ isAlreadyFiltered: true });
-      this.setState({ filteredHomeOffers: filteredOffers });
-    }
+    this.setState({ isAlreadyFiltered: true });
+    this.setState({ filteredHomeOffers: filteredOffers });
   };
 
   render() {
@@ -265,6 +289,7 @@ class MainAppView extends React.Component {
             mapsApiLoaded={this.state.mapsApiLoaded}
             mapInstance={this.state.mapInstance}
             mapsapi={this.state.mapsapi}
+            priceChange={this.priceChange}
           />
         ) : (
           'Loading'

@@ -9,13 +9,12 @@ const SearchBoxContainer = styled.div`
   padding: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 30%;
   height: 40px;
 `;
 
 const StyledInput = styled(Input)`
-  width: 60%;
+  width: 50%;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
 
   &:focus {
@@ -27,7 +26,8 @@ const StyledInput = styled(Input)`
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
 const StyledSliderWithTooltip = styled(SliderWithTooltip)`
-  width: 30% !important;
+  width: 25% !important;
+  margin-left: 40px;
 `;
 
 class SearchBox extends Component {

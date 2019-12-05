@@ -115,6 +115,24 @@ const OffersWrapper = styled.div`
       }
     }
   }
+
+  .infinite-scroll-component__outerdiv {
+    height: 100%;
+  }
+`;
+
+const StyledInfiniteScroll = styled(InfiniteScroll)`
+  height: 100% !important;
+  width: 100%;
+`;
+
+const NoOffers = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
 `;
 
 const OFFERS_CHUNK = 20;
@@ -143,61 +161,71 @@ class List extends React.Component {
   render() {
     return (
       <OffersWrapper id="listWrapper">
-        <InfiniteScroll
+        <StyledInfiniteScroll
           dataLength={this.props.offers.length}
           next={this.loadItems.bind(this)}
           hasMore={this.state.hasMore}
-          loader={<h4>Loading...</h4>}
+          loader={
+            this.props.filteredHomeOffers.length === 1 && this.props.filteredHomeOffers[0] === 0 ? (
+              ''
+            ) : (
+              <h4>Loading...</h4>
+            )
+          }
           scrollableTarget="listWrapper"
           style={{ overflowY: 'hidden' }}
         >
-          {this.props.filteredHomeOffers.map(scrape => {
-            return (
-              <a
-                className="offer-container"
-                href={scrape.link}
-                id={scrape.id}
-                key={scrape.id}
-                onMouseEnter={() => this.props.onMouseEnter(scrape.id, scrape.lat, scrape.long)}
-                onMouseLeave={() => this.props.onMouseLeave()}
-              >
-                <div className="offer">
-                  <div
-                    className="offer__border"
-                    style={{
-                      backgroundColor:
-                        scrape.type === 'Mieszkania » Wynajem'
-                          ? theme.orange
-                          : scrape.type === 'Mieszkania » Sprzedaż'
-                          ? theme.green
-                          : scrape.type === 'Mieszkania » Zamiana'
-                          ? theme.blue
-                          : theme.orange,
-                    }}
-                  />
-                  <div
-                    className="offer__img"
-                    style={{
-                      background:
-                        scrape.img !== undefined
-                          ? `url(${scrape.img})`
-                          : 'url(https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png)',
-                    }}
-                  />
-                  <div className="offers__desc-container">
-                    <h4 className="offer__title">{scrape.title}</h4>
-                    <div className="offer__desc">
-                      <p className="offer__localization">{scrape.localization}</p>
-                      <p className="offer__type">{scrape.type}</p>
-                      <p className="offer__date">{scrape.date}</p>
+          {this.props.filteredHomeOffers.length === 1 && this.props.filteredHomeOffers[0] === 0 ? (
+            <NoOffers>Brak ofert 😔</NoOffers>
+          ) : (
+            this.props.filteredHomeOffers.map(scrape => {
+              return (
+                <a
+                  className="offer-container"
+                  href={scrape.link}
+                  id={scrape.id}
+                  key={scrape.id}
+                  onMouseEnter={() => this.props.onMouseEnter(scrape.id, scrape.lat, scrape.long)}
+                  onMouseLeave={() => this.props.onMouseLeave()}
+                >
+                  <div className="offer">
+                    <div
+                      className="offer__border"
+                      style={{
+                        backgroundColor:
+                          scrape.type === 'Mieszkania » Wynajem'
+                            ? theme.orange
+                            : scrape.type === 'Mieszkania » Sprzedaż'
+                            ? theme.green
+                            : scrape.type === 'Mieszkania » Zamiana'
+                            ? theme.blue
+                            : theme.orange,
+                      }}
+                    />
+                    <div
+                      className="offer__img"
+                      style={{
+                        background:
+                          scrape.img !== undefined
+                            ? `url(${scrape.img})`
+                            : 'url(https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png)',
+                      }}
+                    />
+                    <div className="offers__desc-container">
+                      <h4 className="offer__title">{scrape.title}</h4>
+                      <div className="offer__desc">
+                        <p className="offer__localization">{scrape.localization}</p>
+                        <p className="offer__type">{scrape.type}</p>
+                        <p className="offer__date">{scrape.date}</p>
+                      </div>
                     </div>
+                    <p className="offer__price">{scrape.price}</p>
                   </div>
-                  <p className="offer__price">{scrape.price}</p>
-                </div>
-              </a>
-            );
-          })}
-        </InfiniteScroll>
+                </a>
+              );
+            })
+          )}
+        </StyledInfiniteScroll>
       </OffersWrapper>
     );
   }

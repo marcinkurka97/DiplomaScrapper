@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../atoms/Button/Button';
 import RangeSlider from '../../atoms/RangeSlider/RangeSlider';
 import Input from '../../atoms/Input/Input';
+import Dropdown from '../../atoms/Dropdown/Dropdown';
 import { theme } from '../../../theme/mainTheme';
 import SearchBox from '../../molecules/SearchBox/SearchBox';
 import DarkModeSwitch from '../../molecules/DarkModeSwitch/DarkModeSwitch';
@@ -25,9 +26,8 @@ const FilterBarRowOne = styled.div`
 `;
 
 const TypeButtons = styled.div`
-  width: 30%;
   display: flex;
-  justify-content: space-evenly;
+  width: 30%;
 `;
 
 const StyledButton = styled(Button)`
@@ -51,7 +51,6 @@ const StyledButton = styled(Button)`
 
 const Price = styled.h3`
   width: 15%;
-  margin-left: 100px;
   display: flex;
   align-items: center;
 
@@ -85,11 +84,12 @@ const FilterBarRowTwo = styled.div`
 class FilterBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { rangeValue: [0, 1] };
+    this.state = { rangeValue: [0, 1.5] };
   }
 
   changeHandler = value => {
     this.setState({ rangeValue: value });
+    this.props.priceChange(value);
   };
 
   render() {
@@ -131,9 +131,19 @@ class FilterBar extends React.Component {
             </StyledButton>
           </TypeButtons>
           <Price>
-            <StyledInput type="number" placeholder={`${this.state.rangeValue[0] * 1000} zł`} />
+            <StyledInput
+              type="number"
+              placeholder={`${this.state.rangeValue[0] * 1000} zł`}
+              onChange={event => this.props.priceChange(event.target)}
+              data-min
+            />
             <span>-</span>
-            <StyledInput type="number" placeholder={`${this.state.rangeValue[1] * 1000} zł`} />
+            <StyledInput
+              type="number"
+              placeholder={`${this.state.rangeValue[1] * 1000} zł`}
+              onChange={event => this.props.priceChange(event.target)}
+              data-max
+            />
           </Price>
           <DarkModeSwitch />
         </FilterBarRowOne>
@@ -146,6 +156,7 @@ class FilterBar extends React.Component {
             />
           )}
           <RangeSlider rangeValue={this.state.rangeValue} changeHandler={this.changeHandler} />
+          <Dropdown />
         </FilterBarRowTwo>
       </FilterBarWrapper>
     );

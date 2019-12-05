@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 const DarkModeContainer = styled.div`
-  position: absolute;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   height: 40px;
-  right: 2.5%;
+  width: 10%;
+  margin-left: auto;
 `;
 
 const StyledIcon = styled.svg`

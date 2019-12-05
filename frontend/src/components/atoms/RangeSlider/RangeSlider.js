@@ -10,7 +10,6 @@ const Range = createSliderWithTooltip(Slider.Range);
 const RangeContainer = styled.div`
   width: 15%;
   display: flex;
-  margin-left: 100px;
   align-items: center;
 `;
 
@@ -67,6 +66,7 @@ class RangeSlider extends React.Component {
           step={0.1}
           allowCross={false}
           tipFormatter={value => `${value}k zł`}
+          defaultValue={[0, 1.5]}
           marks={{ 0: '0 zł', 2.5: '2 000 zł', 5: '5 000 zł', 10: '10 000 zł' }}
           trackStyle={[
             {

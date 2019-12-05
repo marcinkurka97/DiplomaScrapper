@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { theme } from '../theme/mainTheme';
-import LoginAnim from '../assets/loginAnim.png';
+import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
 import Input from '../components/atoms/Input/Input';
 import Button from '../components/atoms/Button/Button';
-import CheckBox from '../components/atoms/CheckBox/CheckBox';
 import Heading from '../components/atoms/Heading/Heading';
 
 const LoginWrapper = styled.div`
@@ -40,13 +39,6 @@ const LoginForm = styled.div`
     align-self: center;
     margin-bottom: 20px;
   }
-`;
-
-const LoginAnimation = styled.div`
-  width: 67%;
-  height: 100%;
-  background: url(${LoginAnim});
-  background-size: cover;
 `;
 
 const LoginTitle = styled(Heading)`
@@ -108,7 +100,7 @@ class LoginView extends React.Component {
             </StyledButton>
           </LoginForm>
         </LoginFormContainer>
-        <LoginAnimation />
+        <LoginAnimation width={'68%'} height={'100%'} />
       </LoginWrapper>
     );
   }
