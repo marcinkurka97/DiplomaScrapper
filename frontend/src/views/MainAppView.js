@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/core';
 import { connect } from 'react-redux';
 import debounce from 'lodash.debounce';
 import Header from '../components/organisms/Header/Header';
@@ -7,7 +8,6 @@ import FilterBar from '../components/organisms/FiltersBar/FilterBar';
 import GoogleMap from '../components/organisms/GoogleMap/GoogleMap/Geolocation';
 import List from '../components/organisms/ListView/List';
 import { fetchItems } from '../actions';
-import { theme } from '../theme/mainTheme';
 import LoaderBackground from '../assets/loaderBackground.png';
 
 const ListAndMapWrapper = styled.div`
@@ -16,7 +16,7 @@ const ListAndMapWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background: ${theme.light};
+  background: ${({ theme }) => theme.backgroundGray};
 `;
 
 const AppWrapper = styled.div`
@@ -45,6 +45,7 @@ const Loader = styled.span`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background-color: ${({ theme }) => theme.backgroundGray};
 
   .background {
     position: absolute;
@@ -72,10 +73,10 @@ const Loader = styled.span`
     width: 96px;
     height: 96px;
     margin: 12px;
-    border: 12px solid ${theme.blue};
+    border: 12px solid ${({ theme }) => theme.blue};
     border-radius: 50%;
     animation: ${ldsRing} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: ${theme.blue} transparent transparent transparent;
+    border-color: ${({ theme }) => theme.blue} transparent transparent transparent;
   }
   .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;
@@ -85,6 +86,29 @@ const Loader = styled.span`
   }
   .lds-ring div:nth-child(3) {
     animation-delay: -0.15s;
+  }
+`;
+
+const FilterBarLoading = styled(Loader)`
+  position: relative;
+  height: 17.5vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  .lds-ring {
+    width: 80px;
+    height: 80px;
+  }
+  .lds-ring div {
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid ${({ theme }) => theme.blue};
+    animation: ${ldsRing} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: ${({ theme }) => theme.blue} transparent transparent transparent;
   }
 `;
 
@@ -156,7 +180,7 @@ class MainAppView extends React.Component {
     if (state.offers.length === 0) {
       state.offers = props.homeOffers.slice(0, OFFERS_CHUNK);
     }
-    state.homeOffers = props.homeOffers.slice(0, 500);
+    state.homeOffers = props.homeOffers.slice(0, 250);
 
     return props.homeOffers;
   }
@@ -365,7 +389,14 @@ class MainAppView extends React.Component {
             handleDurationChange={this.handleDurationChange}
           />
         ) : (
-          'Loading'
+          <FilterBarLoading>
+            <div className="lds-ring">
+              <div />
+              <div />
+              <div />
+              <div />
+            </div>
+          </FilterBarLoading>
         )}
         {filteredHomeOffers.length > 0 ? (
           <ListAndMapWrapper>

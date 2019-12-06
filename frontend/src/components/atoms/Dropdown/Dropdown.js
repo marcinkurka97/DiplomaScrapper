@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { theme } from '../../../theme/mainTheme';
+import styled from '@emotion/styled';
 
 const DropdownWrapper = styled.span`
   width: 10%;
@@ -10,8 +9,8 @@ const DropdownWrapper = styled.span`
 
   select {
     height: 40px;
-    background-color: ${theme.light};
-    color: ${theme.dark};
+    background-color: ${({ theme }) => theme.backgroundDarkGray};
+    color: ${({ theme }) => theme.body};
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
     padding: 10px;
     border: 0;

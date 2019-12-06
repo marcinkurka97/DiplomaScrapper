@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import Input from '../../atoms/Input/Input';
 import 'rc-slider/assets/index.css';
-import { theme } from '../../../theme/mainTheme';
+import { theme as MainTheme } from '../../../theme/mainTheme';
 
 const SearchBoxContainer = styled.div`
   padding: 0;
@@ -18,7 +18,7 @@ const StyledInput = styled(Input)`
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
 
   &:focus {
-    outline: ${theme.blue} auto 1px;
+    outline: ${({ theme }) => theme.blue} auto 1px;
   }
 `;
 
@@ -28,6 +28,11 @@ const SliderWithTooltip = createSliderWithTooltip(Slider);
 const StyledSliderWithTooltip = styled(SliderWithTooltip)`
   width: 25% !important;
   margin-left: 40px;
+
+  .rc-slider-rail {
+    height: 10px;
+    background: ${({ theme }) => theme.backgroundDarkGray};
+  }
 `;
 
 class SearchBox extends Component {
@@ -137,10 +142,10 @@ class SearchBox extends Component {
       // Add new circle to array
       circles.push(
         new mapsapi.Circle({
-          strokeColor: theme.orange,
+          strokeColor: MainTheme.orange,
           strokeOpacity: 0.5,
           strokeWeight: 4,
-          fillColor: theme.orange,
+          fillColor: MainTheme.orange,
           fillOpacity: 0.25,
           map: mapInstance,
           center: place.geometry.location,
@@ -199,15 +204,14 @@ class SearchBox extends Component {
           max={20}
           step={0.5}
           value={sliderValue}
-          trackStyle={{ backgroundColor: theme.blue, height: 10 }}
+          trackStyle={{ backgroundColor: MainTheme.blue, height: 10 }}
           handleStyle={{
             border: 0,
             height: 24,
             width: 24,
             marginTop: -7,
-            backgroundColor: theme.blue,
+            backgroundColor: MainTheme.blue,
           }}
-          railStyle={{ backgroundColor: '#dfe0df', height: 10 }}
         />
       </SearchBoxContainer>
     );

@@ -11,6 +11,51 @@ const MapWrapper = styled.div`
   height: 100%;
 `;
 
+const mapStyles =
+  localStorage.getItem('dark') === 'true'
+    ? [
+        {
+          featureType: 'all',
+          elementType: 'geometry',
+          stylers: [
+            {
+              color: '#222222',
+            },
+          ],
+        },
+        {
+          featureType: 'all',
+          elementType: 'labels.text',
+          stylers: [
+            {
+              color: '#eeeeee',
+            },
+            {
+              visibility: 'simplified',
+            },
+          ],
+        },
+        {
+          featureType: 'landscape.man_made',
+          elementType: 'geometry',
+          stylers: [
+            {
+              color: '#263b3e',
+            },
+          ],
+        },
+        {
+          featureType: 'road',
+          elementType: 'geometry',
+          stylers: [
+            {
+              color: '#38414e',
+            },
+          ],
+        },
+      ]
+    : '';
+
 // Default options for Google Maps
 const MAP = {
   defaultZoom: 8,
@@ -18,6 +63,7 @@ const MAP = {
     minZoom: 6,
     maxZoom: 24,
   },
+  styles: mapStyles,
 };
 
 class GoogleMap extends React.PureComponent {
@@ -160,7 +206,7 @@ class GoogleMap extends React.PureComponent {
             lng: 19.01105,
           }}
           center={center}
-          options={MAP.options}
+          options={MAP}
           onChange={this.handleMapChange}
           onClick={this.onMapClicked}
           yesIWantToUseGoogleMapApiInternals
@@ -169,7 +215,6 @@ class GoogleMap extends React.PureComponent {
             key: 'AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE',
             libraries: ['places', 'drawing'],
           }}
-          style={{ zIndex: 5 }}
           onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps)}
         >
           {/* If there is only 1 marker nearby place Marker on map */}

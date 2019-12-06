@@ -6,11 +6,22 @@ import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
 import Input from '../components/atoms/Input/Input';
 import Button from '../components/atoms/Button/Button';
 import Heading from '../components/atoms/Heading/Heading';
+import LogoSVG from '../assets/logo3.svg';
 
 const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+`;
+
+const Logo = styled.div`
+  background: url(${LogoSVG});
+  width: 100%;
+  height: 17.5vh;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  margin-bottom: 12px;
 `;
 
 const LoginFormContainer = styled.div`
@@ -45,7 +56,8 @@ const LoginTitle = styled(Heading)`
   font-size: 50px;
   text-align: center;
   margin: 0 0 18px 0;
-  font-weight: 400;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 `;
 
 const StyledInput = styled(Input)`
@@ -72,12 +84,7 @@ const LoginView = () => {
     <LoginWrapper>
       <LoginFormContainer>
         <LoginForm>
-          <img
-            className="logo"
-            alt="logo"
-            src="https://icon-library.net/images/png-home-icon/png-home-icon-6.jpg"
-          />
-
+          <Logo />
           <LoginTitle>Rejestracja</LoginTitle>
           <label htmlFor="email">Email</label>
           <StyledInput id="email" type="email" />

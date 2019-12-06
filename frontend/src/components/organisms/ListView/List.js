@@ -1,7 +1,8 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { theme } from '../../../theme/mainTheme';
+import { theme as MainTheme } from '../../../theme/mainTheme';
 
 const slideInBottom = keyframes`
   0% {
@@ -17,10 +18,32 @@ const slideInBottom = keyframes`
 const OffersWrapper = styled.div`
   height: 100%;
   width: 50%;
+  overflow-y: scroll;
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.backgroundDarkGray};
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.body};
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
 
   .offer-container {
     text-decoration: none;
-    color: #5a6371;
+    color: ${({ theme }) => theme.bodyOffer};
     overflow-y: auto;
 
     .offer {
@@ -31,7 +54,7 @@ const OffersWrapper = styled.div`
       align-items: center;
       margin: 0 10px 10px 10px;
       border-radius: 6px;
-      background: #fff;
+      background: ${({ theme }) => theme.backgroundOffer};
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
       animation: ${slideInBottom} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 
@@ -98,26 +121,7 @@ const OffersWrapper = styled.div`
     height: 100%;
 
     .infinite-scroll-component {
-      /* width */
-      ::-webkit-scrollbar {
-        width: 12px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
+      overflow: initial !important;
     }
   }
 `;
@@ -171,13 +175,7 @@ class List extends React.Component {
           dataLength={offers.length}
           next={this.loadItems.bind(this)} // eslint-disable-line react/jsx-no-bind
           hasMore={hasMore}
-          loader={
-            filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
-              ''
-            ) : (
-              <h4>Loading...</h4>
-            )
-          }
+          loader={<h4>Loading...</h4>}
           scrollableTarget="listWrapper"
         >
           {filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
@@ -211,12 +209,12 @@ class List extends React.Component {
                       style={{
                         backgroundColor:
                           scrape.type === 'Mieszkania » Wynajem' // eslint-disable-line no-nested-ternary
-                            ? theme.orange
+                            ? MainTheme.orange
                             : scrape.type === 'Mieszkania » Sprzedaż' // eslint-disable-line no-nested-ternary
-                            ? theme.green
+                            ? MainTheme.green
                             : scrape.type === 'Mieszkania » Zamiana'
-                            ? theme.blue
-                            : theme.orange,
+                            ? MainTheme.blue
+                            : MainTheme.orange,
                       }}
                     />
                     <div

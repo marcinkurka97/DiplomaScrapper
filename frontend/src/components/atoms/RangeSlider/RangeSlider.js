@@ -1,8 +1,8 @@
 import React from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import styled from 'styled-components';
-import { theme } from '../../../theme/mainTheme';
+import styled from '@emotion/styled';
+import { theme as MainTheme } from '../../../theme/mainTheme';
 
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -15,9 +15,14 @@ const RangeContainer = styled.div`
 
 const StyledRange = styled(Range)`
   margin: 0 20px;
-  width: 85% !important;
+  width: 85%;
   display: flex;
   align-items: center;
+
+  .rc-slider-rail {
+    height: 10px;
+    background: ${({ theme }) => theme.backgroundDarkGray} !important;
+  }
 
   .rc-slider-step {
     height: 10px;
@@ -81,9 +86,8 @@ class RangeSlider extends React.Component {
             height: 24,
             width: 24,
             marginTop: -7,
-            backgroundColor: theme.blue,
+            backgroundColor: MainTheme.blue,
           }}
-          railStyle={{ backgroundColor: '#dfe0df', height: 10 }}
         />
       </RangeContainer>
     );

@@ -1,13 +1,13 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme, dark }) => (dark ? theme.dark : theme.light)};
+  color: ${({ theme }) => theme.body};
   text-decoration: none;
   padding: 0 25px;
-  background-color: ${({ theme, color }) => color || theme.light};
+  background-color: ${({ theme, color }) => color || theme.backgroundDarkGray};
   height: 40px;
   border: none;
   border-radius: 20px;

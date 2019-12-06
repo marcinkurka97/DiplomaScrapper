@@ -5,7 +5,6 @@ import { theme } from '../../../theme/mainTheme';
 const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
   border: 0;
   clip: rect(0 0 0 0);
-  clippath: inset(50%);
   height: 1px;
   margin: -1px;
   overflow: hidden;
@@ -43,9 +42,9 @@ const CheckboxContainer = styled.div`
   vertical-align: middle;
 `;
 
-const CheckBox = ({ checked }) => (
+const CheckBox = ({ checked, onChange }) => (
   <CheckboxContainer>
-    <HiddenCheckbox checked={checked} />
+    <HiddenCheckbox checked={checked} onChange={onChange} />
     <StyledCheckbox checked={checked}>
       <Icon viewBox="0 0 24 24">
         <polyline points="20 6 9 17 4 12" />

@@ -1,11 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
 import { faHome, faStar, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../atoms/Button/Button';
-import Heading from '../../atoms/Heading/Heading';
 import LinkItem from '../../molecules/LinkItem/LinkItem';
-import { theme } from '../../../theme/mainTheme';
+import LogoSVG from '../../../assets/logo2.svg';
+import { theme as mainTheme } from '../../../theme/mainTheme';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -13,8 +13,17 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   height: 12.5vh;
-  background: #dfe0df;
+  background: ${({ theme }) => theme.backgroundDarkGray};
   padding: 0 30px;
+`;
+
+const Logo = styled.div`
+  background: url(${LogoSVG});
+  width: 200px;
+  height: 8vh;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
 `;
 
 const LoginPanel = styled.div`
@@ -42,18 +51,17 @@ export default function Header() {
   return (
     <StyledHeader>
       <NavPanel>
-        <img alt="logo" src="https://icon-library.net/images/png-home-icon/png-home-icon-6.jpg" />
-        <Heading theme={theme}>Home finder</Heading>
-        <LinkItem theme={theme} icon={faSearch} linkTitle="Search" />
-        <LinkItem theme={theme} icon={faHome} linkTitle="Offers" />
-        <LinkItem theme={theme} icon={faPlus} linkTitle="Add offer" />
-        <LinkItem theme={theme} icon={faStar} linkTitle="Favourites" />
+        <Logo />
+        <LinkItem theme={mainTheme} icon={faSearch} linkTitle="Search" />
+        <LinkItem theme={mainTheme} icon={faHome} linkTitle="Offers" />
+        <LinkItem theme={mainTheme} icon={faPlus} linkTitle="Add offer" />
+        <LinkItem theme={mainTheme} icon={faStar} linkTitle="Favourites" />
       </NavPanel>
       <LoginPanel>
-        <StyledButton color={theme.green} as={NavLink} to="/login">
+        <StyledButton color={mainTheme.green} as={NavLink} to="/login">
           Sign in
         </StyledButton>
-        <StyledButton color={theme.orange} as={NavLink} to="/register">
+        <StyledButton color={mainTheme.orange} as={NavLink} to="/register">
           Sign up
         </StyledButton>
       </LoginPanel>

@@ -1,17 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import Button from '../../atoms/Button/Button';
 import RangeSlider from '../../atoms/RangeSlider/RangeSlider';
 import Input from '../../atoms/Input/Input';
 import Dropdown from '../../atoms/Dropdown/Dropdown';
-import { theme } from '../../../theme/mainTheme';
 import SearchBox from '../../molecules/SearchBox/SearchBox';
 import DarkModeSwitch from '../../molecules/DarkModeSwitch/DarkModeSwitch';
 
 const FilterBarWrapper = styled.div`
   position: relative;
   height: 17.5vh;
-  background: ${theme.light};
+  background: ${({ theme }) => theme.backgroundGray};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,17 +32,17 @@ const TypeButtons = styled.div`
 const StyledButton = styled(Button)`
   margin: 0 15px 0 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
-  background: ${({ active, rent, sell, swap }) =>
+  background: ${({ theme, active, rent, sell, swap }) =>
     active && rent // eslint-disable-line no-nested-ternary
       ? theme.orange
       : active && sell // eslint-disable-line no-nested-ternary
       ? theme.green
       : active && swap
       ? theme.blue
-      : 'initial'};
+      : theme.backgroundDarkGray};
 
   &:hover {
-    background: ${({ rent, sell, swap }) =>
+    background: ${({ theme, rent, sell, swap }) =>
       // eslint-disable-next-line no-nested-ternary
       rent ? theme.orange : sell ? theme.green : swap ? theme.blue : theme.orange};
   }

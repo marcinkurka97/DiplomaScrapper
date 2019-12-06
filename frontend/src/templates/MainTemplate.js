@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../theme/GlobalStyle';
-import { theme } from '../theme/mainTheme';
+import { ThemeProvider } from '../context/ThemeContext';
 
 const MainTemplate = ({ children }) => {
   return (
     <div>
       <GlobalStyle />
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider>{children}</ThemeProvider>
     </div>
   );
 };

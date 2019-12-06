@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Paragraph from '../../atoms/Paragraph/Paragraph';
 
@@ -7,7 +7,7 @@ const LinkItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${theme => theme.light};
+  color: ${({ theme }) => theme.body};
   margin: 0 0 0 50px;
 
   svg {
