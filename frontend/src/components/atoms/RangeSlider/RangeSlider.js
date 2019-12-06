@@ -1,10 +1,10 @@
 import React from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { theme } from '../../../theme/mainTheme';
 import styled from 'styled-components';
+import { theme } from '../../../theme/mainTheme';
 
-const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const RangeContainer = styled.div`
@@ -55,14 +55,15 @@ class RangeSlider extends React.Component {
   }
 
   render() {
+    const { rangeValue, changeHandler } = this.props;
     return (
       <RangeContainer>
         <StyledRange
           ref={this.rangeRef}
           min={0}
           max={10}
-          value={this.props.rangeValue}
-          onChange={this.props.changeHandler}
+          value={rangeValue}
+          onChange={changeHandler}
           step={0.1}
           allowCross={false}
           tipFormatter={value => `${value}k zł`}

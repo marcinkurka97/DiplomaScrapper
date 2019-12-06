@@ -115,6 +115,7 @@ class LoginView extends React.Component {
   };
 
   render() {
+    const { checked } = this.state;
     return (
       <LoginWrapper>
         <LoginFormContainer>
@@ -138,7 +139,7 @@ class LoginView extends React.Component {
               Zaloguj
             </StyledButton>
             <RememberMe>
-              <CheckBox checked={this.state.checked} onChange={this.handleCheckboxChange} />
+              <CheckBox checked={checked} onChange={this.handleCheckboxChange} />
               <span>Zapamiętaj mnie</span>
             </RememberMe>
             <a className="pass-forgot" href="/register">
@@ -146,7 +147,7 @@ class LoginView extends React.Component {
             </a>
           </LoginForm>
         </LoginFormContainer>
-        <LoginAnimation width={'67%'} height={'100%'} />
+        <LoginAnimation width="67%" height="100%" />
       </LoginWrapper>
     );
   }

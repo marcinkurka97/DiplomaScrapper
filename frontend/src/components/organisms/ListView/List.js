@@ -152,27 +152,27 @@ class List extends React.Component {
   }
 
   loadItems() {
-    const offersArr = this.props.filteredHomeOffers.slice(
-      0,
-      this.props.offers.length + OFFERS_CHUNK,
-    );
+    const { filteredHomeOffers, offers, handleSettingOffersState } = this.props;
+    const offersArr = filteredHomeOffers.slice(0, offers.length + OFFERS_CHUNK);
 
-    if (this.props.offers.length >= this.props.filteredHomeOffers.length) {
+    if (offers.length >= filteredHomeOffers.length) {
       this.setState({ hasMore: false });
     } else {
-      this.props.handleSettingOffersState(offersArr);
+      handleSettingOffersState(offersArr);
     }
   }
 
   render() {
+    const { offers, filteredHomeOffers, onMouseEnter, onMouseLeave } = this.props;
+    const { hasMore } = this.state;
     return (
       <OffersWrapper id="listWrapper">
         <StyledInfiniteScroll
-          dataLength={this.props.offers.length}
-          next={this.loadItems.bind(this)}
-          hasMore={this.state.hasMore}
+          dataLength={offers.length}
+          next={this.loadItems.bind(this)} // eslint-disable-line react/jsx-no-bind
+          hasMore={hasMore}
           loader={
-            this.props.filteredHomeOffers.length === 1 && this.props.filteredHomeOffers[0] === 0 ? (
+            filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
               ''
             ) : (
               <h4>Loading...</h4>
@@ -180,7 +180,7 @@ class List extends React.Component {
           }
           scrollableTarget="listWrapper"
         >
-          {this.props.filteredHomeOffers.length === 1 && this.props.filteredHomeOffers[0] === 0 ? (
+          {filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
             <NoOffers>
               <span>
                 Brak ofert
@@ -195,24 +195,24 @@ class List extends React.Component {
               </p>
             </NoOffers>
           ) : (
-            this.props.filteredHomeOffers.map(scrape => {
+            filteredHomeOffers.map(scrape => {
               return (
                 <a
                   className="offer-container"
                   href={scrape.link}
                   id={scrape.id}
                   key={scrape.id}
-                  onMouseEnter={() => this.props.onMouseEnter(scrape.id, scrape.lat, scrape.long)}
-                  onMouseLeave={() => this.props.onMouseLeave()}
+                  onMouseEnter={() => onMouseEnter(scrape.id, scrape.lat, scrape.long)}
+                  onMouseLeave={() => onMouseLeave()}
                 >
                   <div className="offer">
                     <div
                       className="offer__border"
                       style={{
                         backgroundColor:
-                          scrape.type === 'Mieszkania » Wynajem'
+                          scrape.type === 'Mieszkania » Wynajem' // eslint-disable-line no-nested-ternary
                             ? theme.orange
-                            : scrape.type === 'Mieszkania » Sprzedaż'
+                            : scrape.type === 'Mieszkania » Sprzedaż' // eslint-disable-line no-nested-ternary
                             ? theme.green
                             : scrape.type === 'Mieszkania » Zamiana'
                             ? theme.blue

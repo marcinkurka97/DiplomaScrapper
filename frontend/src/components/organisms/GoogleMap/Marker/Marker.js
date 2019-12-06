@@ -131,39 +131,41 @@ const MarkerInfoWindowWrapper = styled.div`
 `;
 
 class Marker extends React.PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
-  static defaultProps = {
-    inGroup: false,
-  };
-
   render() {
+    const {
+      inGroup,
+      colorType,
+      hoverIdState,
+      hoverState,
+      markerId,
+      showingInfoWindow,
+      keyId,
+      selectedPlace,
+      markerTitle,
+      markerImg,
+      markerPrice,
+      markerLink,
+      markerType,
+    } = this.props;
     return (
       <div>
         {/* If there is more than 1 marker nearby create group with marker icon and '+quantinty' */}
-        {this.props.inGroup ? (
+        {inGroup ? (
           <MarkerInGroupStyled>
-            <HomeIcon colorType={this.props.colorType} />
+            <HomeIcon colorType={colorType} />
           </MarkerInGroupStyled>
         ) : (
-          <MarkerStyled
-            hoverState={this.props.hoverState}
-            hoverIdState={this.props.hoverIdState}
-            markerId={this.props.markerId}
-          >
-            <HomeIcon colorType={this.props.markerType} />
+          <MarkerStyled hoverState={hoverState} hoverIdState={hoverIdState} markerId={markerId}>
+            <HomeIcon colorType={markerType} />
           </MarkerStyled>
         )}
-        {this.props.showingInfoWindow && this.props.keyId === this.props.selectedPlace && (
+        {showingInfoWindow && keyId === selectedPlace && (
           <MarkerInfoWindowWrapper>
-            <img
-              alt={this.props.markerTitle}
-              className="marker-window__img"
-              src={this.props.markerImg}
-            />
+            <img alt={markerTitle} className="marker-window__img" src={markerImg} />
             <div className="marker-window__right">
-              <h4 className="marker-window__right__title">{this.props.markerTitle}</h4>
-              <p className="marker-window__right__price">{this.props.markerPrice}</p>
-              <a className="marker-window__right__link" href={this.props.markerLink}>
+              <h4 className="marker-window__right__title">{markerTitle}</h4>
+              <p className="marker-window__right__price">{markerPrice}</p>
+              <a className="marker-window__right__link" href={markerLink}>
                 Przejdź do oferty
               </a>
             </div>
@@ -173,6 +175,10 @@ class Marker extends React.PureComponent {
     );
   }
 }
+
+Marker.defaultProps = {
+  inGroup: false,
+};
 
 Marker.propTypes = {
   inGroup: PropTypes.bool,

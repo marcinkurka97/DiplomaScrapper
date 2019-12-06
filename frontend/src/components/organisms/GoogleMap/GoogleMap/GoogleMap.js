@@ -20,13 +20,15 @@ const MAP = {
   },
 };
 
-export class GoogleMap extends React.PureComponent {
+class GoogleMap extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const { myLatLng } = this.props;
+
     this.state = {
       mapOptions: {
-        center: this.props.myLatLng,
+        center: myLatLng,
         zoom: MAP.defaultZoom,
       },
       clusters: [],
@@ -39,14 +41,17 @@ export class GoogleMap extends React.PureComponent {
 
   // Load data on component mount
   componentDidMount() {
-    this.getScrapeData(this.props.filteredHomeOffers);
+    const { filteredHomeOffers } = this.props;
+    this.getScrapeData(filteredHomeOffers);
   }
 
   // Rerender when new orders are added to list
   componentDidUpdate(prevProps) {
-    if (prevProps.filteredHomeOffers.length !== this.props.filteredHomeOffers.length) {
-      this.getScrapeData(this.props.filteredHomeOffers);
-      this.handleMapChange(this.state.mapOptions);
+    const { filteredHomeOffers } = this.props;
+    const { mapOptions } = this.state;
+    if (prevProps.filteredHomeOffers.length !== filteredHomeOffers.length) {
+      this.getScrapeData(filteredHomeOffers);
+      this.handleMapChange(mapOptions);
     }
   }
 
@@ -61,7 +66,8 @@ export class GoogleMap extends React.PureComponent {
 
   // Event handler for clickich on map (hiding Info Window)
   onMapClicked = () => {
-    if (this.state.showingInfoWindow) {
+    const { showingInfoWindow } = this.state;
+    if (showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
         activeMarker: null,
@@ -93,18 +99,20 @@ export class GoogleMap extends React.PureComponent {
 
   // Creating superclusters array from markers array
   getClusters = () => {
-    const clusters = supercluster(this.state.markers, {
+    const { markers, mapOptions } = this.state;
+    const clusters = supercluster(markers, {
       minZoom: 0,
       maxZoom: 24,
       radius: 20,
     });
-    return clusters(this.state.mapOptions);
+    return clusters(mapOptions);
   };
 
   // Filling clusters state with data from supercluster
   createClusters = props => {
+    const { mapOptions } = this.state;
     this.setState({
-      clusters: this.state.mapOptions.bounds
+      clusters: mapOptions.bounds
         ? this.getClusters(props).map(({ wx, wy, numPoints, points }) => ({
             lat: wy,
             lng: wx,
@@ -134,12 +142,15 @@ export class GoogleMap extends React.PureComponent {
 
   // Send data to parent component
   apiIsLoaded = (map, maps) => {
-    this.props.setMapInstance(map);
-    this.props.setMapAPI(maps);
-    this.props.setMapsApiLoaded();
+    const { setMapInstance, setMapAPI, setMapsApiLoaded } = this.props;
+    setMapInstance(map);
+    setMapAPI(maps);
+    setMapsApiLoaded();
   };
 
   render() {
+    const { center, hoverState, hoverIdState } = this.props;
+    const { clusters, showingInfoWindow, activeMarker, selectedPlace } = this.state;
     return (
       <MapWrapper>
         <GoogleMapReact
@@ -148,7 +159,7 @@ export class GoogleMap extends React.PureComponent {
             lat: 50.264821,
             lng: 19.01105,
           }}
-          center={this.props.center}
+          center={center}
           options={MAP.options}
           onChange={this.handleMapChange}
           onClick={this.onMapClicked}
@@ -162,7 +173,7 @@ export class GoogleMap extends React.PureComponent {
           onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps)}
         >
           {/* If there is only 1 marker nearby place Marker on map */}
-          {this.state.clusters.map(item => {
+          {clusters.map(item => {
             if (item.numPoints === 1) {
               return (
                 <Marker
@@ -176,11 +187,11 @@ export class GoogleMap extends React.PureComponent {
                   markerPrice={item.points[0].markerPrice}
                   markerLink={item.points[0].markerLink}
                   markerType={item.points[0].markerType}
-                  showingInfoWindow={this.state.showingInfoWindow}
-                  activeMarker={this.state.activeMarker}
-                  selectedPlace={this.state.selectedPlace}
-                  hoverState={this.props.hoverState}
-                  hoverIdState={this.props.hoverIdState}
+                  showingInfoWindow={showingInfoWindow}
+                  activeMarker={activeMarker}
+                  selectedPlace={selectedPlace}
+                  hoverState={hoverState}
+                  hoverIdState={hoverIdState}
                 />
               );
             }
@@ -192,8 +203,8 @@ export class GoogleMap extends React.PureComponent {
                 lat={item.lat}
                 lng={item.lng}
                 points={item.points}
-                hoverState={this.props.hoverState}
-                hoverIdState={this.props.hoverIdState}
+                hoverState={hoverState}
+                hoverIdState={hoverIdState}
               />
             );
           })}

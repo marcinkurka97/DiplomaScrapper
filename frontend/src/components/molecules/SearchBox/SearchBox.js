@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Input from '../../atoms/Input/Input';
 import styled from 'styled-components';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
+import Input from '../../atoms/Input/Input';
 import 'rc-slider/assets/index.css';
 import { theme } from '../../../theme/mainTheme';
 
@@ -75,16 +75,12 @@ class SearchBox extends Component {
     event.clearInstanceListeners(this.searchBox);
   }
 
-  // Text displaying above slider
-  distanceFormater(v) {
-    return `Odległość: ${v} km`;
-  }
-
   // Get value from search input and place marker icon on that place and draw circle around it
   onPlacesChanged = () => {
+    const { mapInstance, mapsapi, sliderValue } = this.state;
+    let { markers, circles } = this.state;
+    const { filterByDistance } = this.props;
     const places = this.searchBox.getPlaces();
-    let markers = this.state.markers;
-    let circles = this.state.circles;
 
     if (places.length === 0) {
       return;
@@ -92,68 +88,67 @@ class SearchBox extends Component {
 
     // Clear all previous markers from map
     // Only one marker will be displayed at specific time
-    markers.forEach(function(marker) {
+    markers.forEach(marker => {
       marker.setMap(null);
     });
     markers = [];
 
-    this.setState({ markers: markers });
+    this.setState({ markers });
 
     // Clear all previous circles from map
     // Only one circle will be displayed at specific time
-    circles.forEach(function(circle) {
+    circles.forEach(circle => {
       circle.setMap(null);
     });
     circles = [];
 
-    this.setState({ circles: circles });
+    this.setState({ circles });
 
     // Bound for centering map on specific point
-    const bounds = new this.state.mapsapi.LatLngBounds();
+    const bounds = new mapsapi.LatLngBounds();
 
     // Map over all places and place marker and circle at place.location
     places.forEach(place => {
       if (!place.geometry) {
-        console.log('Returned place contains no geometry');
         return;
       }
 
       // Icon config
       const icon = {
         url: 'https://image.flaticon.com/icons/svg/684/684908.svg',
-        size: new this.state.mapsapi.Size(142, 142),
-        origin: new this.state.mapsapi.Point(0, 0),
-        anchor: new this.state.mapsapi.Point(25, 50),
-        scaledSize: new this.state.mapsapi.Size(50, 50),
+        size: new mapsapi.Size(142, 142),
+        origin: new mapsapi.Point(0, 0),
+        anchor: new mapsapi.Point(25, 50),
+        scaledSize: new mapsapi.Size(50, 50),
       };
 
       // Add new marker to array
       markers.push(
-        new this.state.mapsapi.Marker({
-          map: this.state.mapInstance,
+        new mapsapi.Marker({
+          map: mapInstance,
           icon,
           title: place.name,
           position: place.geometry.location,
         }),
       );
 
-      this.setState({ markers: markers });
+      this.setState({ markers });
 
       // Add new circle to array
       circles.push(
-        new this.state.mapsapi.Circle({
+        new mapsapi.Circle({
           strokeColor: theme.orange,
           strokeOpacity: 0.5,
           strokeWeight: 4,
           fillColor: theme.orange,
           fillOpacity: 0.25,
-          map: this.state.mapInstance,
+          map: mapInstance,
           center: place.geometry.location,
-          radius: 1000 * this.state.sliderValue,
+          radius: 1000 * sliderValue,
         }),
       );
 
-      this.setState({ circles: circles });
+      this.setState({ circles });
 
       // Recenter map to this place
       if (place.geometry.viewport) {
@@ -162,37 +157,37 @@ class SearchBox extends Component {
         bounds.extend(place.geometry.location);
       }
     });
-    this.state.mapInstance.fitBounds(bounds);
+    mapInstance.fitBounds(bounds);
 
     // Call to parent function which filters markers within cirle range
-    this.props.filterByDistance(
-      this.state.mapsapi,
-      circles[0].radius,
-      this.state.circles[0].center,
-    );
+    filterByDistance(mapsapi, circles[0].radius, circles[0].center);
   };
 
   // OnChange event handler for slider component
   handleSliderChange = e => {
+    const { mapsapi, radius, circles } = this.state;
+    const { filterByDistance } = this.props;
     this.setState({ sliderValue: e });
 
-    if (this.state.circles.length > 0) {
+    if (circles.length > 0) {
       this.setState({ radius: e * 1000 });
 
-      const newCircle = this.state.circles;
-      newCircle[0].setRadius(this.state.radius);
+      const newCircle = circles;
+      newCircle[0].setRadius(radius);
 
       this.setState({ circles: newCircle });
 
-      this.props.filterByDistance(
-        this.state.mapsapi,
-        this.state.radius,
-        this.state.circles[0].center,
-      );
+      filterByDistance(mapsapi, radius, circles[0].center);
     }
   };
 
+  // Text displaying above slider
+  distanceFormater = v => {
+    return `Odległość: ${v} km`;
+  };
+
   render() {
+    const { sliderValue } = this.state;
     return (
       <SearchBoxContainer>
         <StyledInput search ref={this.searchInput} placeholder="Wyszukaj miejsce" type="text" />
@@ -203,7 +198,7 @@ class SearchBox extends Component {
           min={0.5}
           max={20}
           step={0.5}
-          value={this.state.sliderValue}
+          value={sliderValue}
           trackStyle={{ backgroundColor: theme.blue, height: 10 }}
           handleStyle={{
             border: 0,

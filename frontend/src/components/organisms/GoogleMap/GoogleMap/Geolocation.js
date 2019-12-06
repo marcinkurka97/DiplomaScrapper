@@ -17,10 +17,6 @@ class Geolocation extends React.Component {
     this.sendDataToParent();
   }
 
-  sendDataToParent = () => {
-    this.props.parentCallback(this.state.myLatLng);
-  };
-
   // Get current location if user agrees to share his location
   getLocation() {
     if (navigator.geolocation) {
@@ -43,18 +39,35 @@ class Geolocation extends React.Component {
     }
   }
 
+  sendDataToParent = () => {
+    const { parentCallback } = this.props;
+    const { myLatLng } = this.state;
+    parentCallback(myLatLng);
+  };
+
   render() {
+    const { myLatLng } = this.state;
+    const {
+      filteredHomeOffers,
+      hoverState,
+      hoverIdState,
+      center,
+      filterByDistance,
+      setMapsApiLoaded,
+      setMapInstance,
+      setMapAPI,
+    } = this.props;
     return (
       <GoogleMap
-        myLatLng={this.state.myLatLng}
-        filteredHomeOffers={this.props.filteredHomeOffers}
-        hoverState={this.props.hoverState}
-        hoverIdState={this.props.hoverIdState}
-        center={this.props.center}
-        filterByDistance={this.props.filterByDistance}
-        setMapsApiLoaded={this.props.setMapsApiLoaded}
-        setMapInstance={this.props.setMapInstance}
-        setMapAPI={this.props.setMapAPI}
+        myLatLng={myLatLng}
+        filteredHomeOffers={filteredHomeOffers}
+        hoverState={hoverState}
+        hoverIdState={hoverIdState}
+        center={center}
+        filterByDistance={filterByDistance}
+        setMapsApiLoaded={setMapsApiLoaded}
+        setMapInstance={setMapInstance}
+        setMapAPI={setMapAPI}
       />
     );
   }

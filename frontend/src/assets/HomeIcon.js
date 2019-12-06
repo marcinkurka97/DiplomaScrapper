@@ -1,15 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { theme } from '../theme/mainTheme';
 
 function HomeIcon(props) {
+  const { colorType } = props;
   // Different colors for different types of offers
   const colors =
-    props.colorType === 'Mieszkania » Wynajem'
+    colorType === 'Mieszkania » Wynajem'
       ? theme.orange
-      : props.colorType === 'Mieszkania » Sprzedaż'
+      : colorType === 'Mieszkania » Sprzedaż'
       ? theme.green
-      : props.colorType === 'Mieszkania » Zamiana'
+      : colorType === 'Mieszkania » Zamiana'
       ? theme.blue
       : theme.blue;
 
@@ -46,9 +46,5 @@ function HomeIcon(props) {
     </svg>
   );
 }
-
-HomeIcon.propTypes = {
-  scale: PropTypes.string,
-};
 
 export default HomeIcon;

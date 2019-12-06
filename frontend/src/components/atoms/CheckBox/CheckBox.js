@@ -43,9 +43,9 @@ const CheckboxContainer = styled.div`
   vertical-align: middle;
 `;
 
-const CheckBox = ({ className, checked, ...props }) => (
-  <CheckboxContainer className={className}>
-    <HiddenCheckbox checked={checked} {...props} />
+const CheckBox = ({ checked }) => (
+  <CheckboxContainer>
+    <HiddenCheckbox checked={checked} />
     <StyledCheckbox checked={checked}>
       <Icon viewBox="0 0 24 24">
         <polyline points="20 6 9 17 4 12" />

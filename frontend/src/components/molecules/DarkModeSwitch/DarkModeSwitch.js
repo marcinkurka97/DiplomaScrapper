@@ -190,26 +190,26 @@ class DarkModeSwitch extends React.Component {
               />
             </g>
           </g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
         </StyledIcon>
         <SwitchWrapper className="theme-switch-wrapper">
           <label className="theme-switch" htmlFor="checkbox">
             <input type="checkbox" id="checkbox" onChange={e => this.switchTheme(e)} />
-            <div className="slider round"></div>
+            <div className="slider round" />
           </label>
         </SwitchWrapper>
         <StyledIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 476 476">
@@ -228,21 +228,21 @@ class DarkModeSwitch extends React.Component {
 	c9.632,83.308,77.088,150.767,160.396,160.4c33.598,3.888,67.346-1.326,97.6-15.069c29.017-13.183,54.259-33.854,72.996-59.778
 	c0.122-0.169,0.21-0.236,0.23-0.245c0.068-0.026,0.343,0.018,0.545,0.194C461.111,272.055,461.179,272.114,461.119,272.488z"
           />
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
+          <g />
         </StyledIcon>
       </DarkModeContainer>
     );

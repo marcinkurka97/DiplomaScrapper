@@ -67,43 +67,32 @@ const StyledButton = styled(Button)`
   margin: 20px 0 0 0;
 `;
 
-class LoginView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { checked: false };
-  }
+const LoginView = () => {
+  return (
+    <LoginWrapper>
+      <LoginFormContainer>
+        <LoginForm>
+          <img
+            className="logo"
+            alt="logo"
+            src="https://icon-library.net/images/png-home-icon/png-home-icon-6.jpg"
+          />
 
-  handleCheckboxChange = event => {
-    this.setState({ checked: event.target.checked });
-  };
-
-  render() {
-    return (
-      <LoginWrapper>
-        <LoginFormContainer>
-          <LoginForm>
-            <img
-              className="logo"
-              alt="logo"
-              src="https://icon-library.net/images/png-home-icon/png-home-icon-6.jpg"
-            />
-
-            <LoginTitle>Rejestracja</LoginTitle>
-            <label htmlFor="email">Email</label>
-            <StyledInput id="email" type="email" />
-            <label htmlFor="username">Użytkownik</label>
-            <StyledInput id="username" />
-            <label htmlFor="password">Hasło</label>
-            <StyledInput id="password" type="password" />
-            <StyledButton as={NavLink} to="/">
-              Zarejestruj się
-            </StyledButton>
-          </LoginForm>
-        </LoginFormContainer>
-        <LoginAnimation width={'68%'} height={'100%'} />
-      </LoginWrapper>
-    );
-  }
-}
+          <LoginTitle>Rejestracja</LoginTitle>
+          <label htmlFor="email">Email</label>
+          <StyledInput id="email" type="email" />
+          <label htmlFor="username">Użytkownik</label>
+          <StyledInput id="username" />
+          <label htmlFor="password">Hasło</label>
+          <StyledInput id="password" type="password" />
+          <StyledButton as={NavLink} to="/">
+            Zarejestruj się
+          </StyledButton>
+        </LoginForm>
+      </LoginFormContainer>
+      <LoginAnimation width="68%" height="100%" />
+    </LoginWrapper>
+  );
+};
 
 export default LoginView;

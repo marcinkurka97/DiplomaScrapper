@@ -2,8 +2,8 @@ import React from 'react';
 import Lottie from 'react-lottie';
 import PropTypes from 'prop-types';
 
-//#region Animation
-var animationData = {
+// #region Animation
+const animationData = {
   v: '5.5.9',
   fr: 25,
   ip: 0,
@@ -1357,12 +1357,12 @@ var animationData = {
   ],
   markers: [],
 };
-//#endregion
+// #endregion
 
 const defaultOptions = {
   loop: false,
   autoplay: true,
-  animationData: animationData,
+  animationData,
   rendererSettings: {
     preserveAspectRatio: 'xMinYMin slice',
     clearCanvas: false,
@@ -1376,8 +1376,8 @@ const LoginAnimation = ({ width, height }) => (
 );
 
 LoginAnimation.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
+  width: PropTypes.string,
+  height: PropTypes.string,
 };
 
 LoginAnimation.defaultProps = {

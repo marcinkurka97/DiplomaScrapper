@@ -9,7 +9,9 @@
   "globals": {
     "window": true,
     "document": true,
-    "google": true
+    "google": true,
+    "navigator": true,
+    "localStorage": true
   },
   "settings": {
     "import/resolver": {
@@ -19,6 +21,8 @@
     }
   },
   "rules": {
+    "no-nested-ternary": 0,
+    "no-param-reassign": 0,
     "no-underscore-dangle": 0,
     "react/prop-types": 0,
     "import/prefer-default-export": 0,
@@ -28,6 +32,22 @@
       1,
       {
         "extensions": [".js"]
+      }
+    ],
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "required": {
+          "some": ["nesting", "id"]
+        }
+      }
+    ],
+    "jsx-a11y/label-has-for": [
+      "error",
+      {
+        "required": {
+          "some": ["nesting", "id"]
+        }
       }
     ]
   }

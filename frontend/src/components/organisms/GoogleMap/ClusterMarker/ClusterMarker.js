@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List } from 'immutable';
 import styled, { keyframes, css } from 'styled-components';
 import Marker from '../Marker/Marker';
 
@@ -78,11 +77,16 @@ const MarkerGroup = styled.div`
 `;
 
 class ClusterMarker extends React.PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
-  state = {
-    clusterFaceMarkers: this.props.points.slice(0, 1),
-    colorType: '',
-  };
+  constructor(props) {
+    super(props);
+
+    const { points } = this.props;
+
+    this.state = {
+      clusterFaceMarkers: points.slice(0, 1),
+      colorType: '',
+    };
+  }
 
   componentDidMount() {
     this.mostMarkersTypeInCluster();
@@ -96,15 +100,18 @@ class ClusterMarker extends React.PureComponent {
     let rentCounter = 0;
     let sellCounter = 0;
     let swapCounter = 0;
-    this.props.points.map(point => {
+
+    const { points } = this.props;
+
+    points.map(point => {
       if (point.markerType === 'Mieszkania » Wynajem') {
-        rentCounter++;
+        rentCounter += 1;
       }
       if (point.markerType === 'Mieszkania » Sprzedaż') {
-        sellCounter++;
+        sellCounter += 1;
       }
       if (point.markerType === 'Mieszkania » Zamiana') {
-        swapCounter++;
+        swapCounter += 1;
       }
       return null;
     });
@@ -119,37 +126,40 @@ class ClusterMarker extends React.PureComponent {
   };
 
   render() {
+    const { points, hoverState, hoverIdState, markerId } = this.props;
+    const { clusterFaceMarkers, colorType } = this.state;
     return (
       // Creating marker group with HomeIcon and Quantity
       <MarkerGroup
-        length={this.props.points.length}
-        hoverState={this.props.hoverState}
-        hoverIdState={this.props.hoverIdState}
-        markerId={this.props.markerId}
-        points={this.props.points}
+        length={points.length}
+        hoverState={hoverState}
+        hoverIdState={hoverIdState}
+        markerId={markerId}
+        points={points}
       >
-        {this.state.clusterFaceMarkers.map(marker => (
+        {clusterFaceMarkers.map(marker => (
           <Marker
             key={marker.id}
             lat={marker.lat}
             lng={marker.lng}
             name={marker.id}
             inGroup
-            colorType={this.state.colorType}
+            colorType={colorType}
           />
         ))}
-        {this.props.points.length > 1 && (
-          <MarkerCounter>+{this.props.points.length - 1}</MarkerCounter>
-        )}
+        {points.length > 1 && <MarkerCounter>+{points.length - 1}</MarkerCounter>}
       </MarkerGroup>
     );
   }
 }
 
+ClusterMarker.defaultProps = {
+  points: [],
+};
+
 ClusterMarker.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   points: PropTypes.array,
-  users: PropTypes.instanceOf(List),
-  selected: PropTypes.bool,
 };
 
 export default ClusterMarker;

@@ -33,17 +33,18 @@ const TypeButtons = styled.div`
 const StyledButton = styled(Button)`
   margin: 0 15px 0 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
-  background: ${({ theme, active, rent, sell, swap }) =>
-    active && rent
+  background: ${({ active, rent, sell, swap }) =>
+    active && rent // eslint-disable-line no-nested-ternary
       ? theme.orange
-      : active && sell
+      : active && sell // eslint-disable-line no-nested-ternary
       ? theme.green
       : active && swap
       ? theme.blue
       : 'initial'};
 
   &:hover {
-    background: ${({ theme, rent, sell, swap }) =>
+    background: ${({ rent, sell, swap }) =>
+      // eslint-disable-next-line no-nested-ternary
       rent ? theme.orange : sell ? theme.green : swap ? theme.blue : theme.orange};
   }
   transition: background 1s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -88,11 +89,23 @@ class FilterBar extends React.Component {
   }
 
   changeHandler = value => {
+    const { priceChange } = this.props;
     this.setState({ rangeValue: value });
-    this.props.priceChange(value);
+    priceChange(value);
   };
 
   render() {
+    const {
+      currentActiveType,
+      filterByType,
+      priceChange,
+      mapsApiLoaded,
+      mapInstance,
+      mapsapi,
+      filterByDistance,
+      handleDurationChange,
+    } = this.props;
+    const { rangeValue } = this.state;
     return (
       <FilterBarWrapper>
         <FilterBarRowOne>
@@ -100,32 +113,32 @@ class FilterBar extends React.Component {
             <StyledButton
               swap
               dark
-              onClick={() => this.props.filterByType('All')}
-              active={this.props.currentActiveType === 'All'}
+              onClick={() => filterByType('All')}
+              active={currentActiveType === 'All'}
             >
               All
             </StyledButton>
             <StyledButton
               rent
               dark
-              onClick={() => this.props.filterByType('Mieszkania » Wynajem')}
-              active={this.props.currentActiveType === 'Mieszkania » Wynajem'}
+              onClick={() => filterByType('Mieszkania » Wynajem')}
+              active={currentActiveType === 'Mieszkania » Wynajem'}
             >
               Wynajem
             </StyledButton>
             <StyledButton
               sell
               dark
-              onClick={() => this.props.filterByType('Mieszkania » Sprzedaż')}
-              active={this.props.currentActiveType === 'Mieszkania » Sprzedaż'}
+              onClick={() => filterByType('Mieszkania » Sprzedaż')}
+              active={currentActiveType === 'Mieszkania » Sprzedaż'}
             >
               Sprzedaż
             </StyledButton>
             <StyledButton
               swap
               dark
-              onClick={() => this.props.filterByType('Mieszkania » Zamiana')}
-              active={this.props.currentActiveType === 'Mieszkania » Zamiana'}
+              onClick={() => filterByType('Mieszkania » Zamiana')}
+              active={currentActiveType === 'Mieszkania » Zamiana'}
             >
               Zamiana
             </StyledButton>
@@ -133,30 +146,30 @@ class FilterBar extends React.Component {
           <Price>
             <StyledInput
               type="number"
-              placeholder={`${this.state.rangeValue[0] * 1000} zł`}
-              onChange={event => this.props.priceChange(event.target)}
+              placeholder={`${rangeValue[0] * 1000} zł`}
+              onChange={event => priceChange(event.target)}
               data-min
             />
             <span>-</span>
             <StyledInput
               type="number"
-              placeholder={`${this.state.rangeValue[1] * 1000} zł`}
-              onChange={event => this.props.priceChange(event.target)}
+              placeholder={`${rangeValue[1] * 1000} zł`}
+              onChange={event => priceChange(event.target)}
               data-max
             />
           </Price>
           <DarkModeSwitch />
         </FilterBarRowOne>
         <FilterBarRowTwo>
-          {this.props.mapsApiLoaded && (
+          {mapsApiLoaded && (
             <SearchBox
-              mapInstance={this.props.mapInstance}
-              mapsapi={this.props.mapsapi}
-              filterByDistance={this.props.filterByDistance}
+              mapInstance={mapInstance}
+              mapsapi={mapsapi}
+              filterByDistance={filterByDistance}
             />
           )}
-          <RangeSlider rangeValue={this.state.rangeValue} changeHandler={this.changeHandler} />
-          <Dropdown handleDurationChange={this.props.handleDurationChange} />
+          <RangeSlider rangeValue={rangeValue} changeHandler={this.changeHandler} />
+          <Dropdown handleDurationChange={handleDurationChange} />
         </FilterBarRowTwo>
       </FilterBarWrapper>
     );
