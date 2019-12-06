@@ -141,7 +141,7 @@ class LoginView extends React.Component {
               <CheckBox checked={this.state.checked} onChange={this.handleCheckboxChange} />
               <span>Zapamiętaj mnie</span>
             </RememberMe>
-            <a className="pass-forgot" href="#">
+            <a className="pass-forgot" href="/register">
               Przypomnij hasło
             </a>
           </LoginForm>

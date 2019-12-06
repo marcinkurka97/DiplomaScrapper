@@ -37,8 +37,21 @@ export class GoogleMap extends React.PureComponent {
     };
   }
 
+  // Load data on component mount
+  componentDidMount() {
+    this.getScrapeData(this.props.filteredHomeOffers);
+  }
+
+  // Rerender when new orders are added to list
+  componentDidUpdate(prevProps) {
+    if (prevProps.filteredHomeOffers.length !== this.props.filteredHomeOffers.length) {
+      this.getScrapeData(this.props.filteredHomeOffers);
+      this.handleMapChange(this.state.mapOptions);
+    }
+  }
+
   // Event handler for clicking on Marker (showing Info Window)
-  onMarkerClick = (props, marker, e) => {
+  onMarkerClick = (props, marker) => {
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
@@ -47,7 +60,7 @@ export class GoogleMap extends React.PureComponent {
   };
 
   // Event handler for clickich on map (hiding Info Window)
-  onMapClicked = props => {
+  onMapClicked = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
@@ -55,18 +68,6 @@ export class GoogleMap extends React.PureComponent {
       });
     }
   };
-
-  // Load data on component mount
-  componentDidMount() {
-    this.getScrapeData(this.props.filteredHomeOffers);
-  }
-
-  // Rerender when new orders are added to list
-  componentDidUpdate(prevProps) {
-    if (prevProps.filteredHomeOffers !== this.props.filteredHomeOffers) {
-      this.getScrapeData(this.props.filteredHomeOffers);
-    }
-  }
 
   // Create markers object array (provided via props)
   getScrapeData = offers => {
@@ -97,7 +98,6 @@ export class GoogleMap extends React.PureComponent {
       maxZoom: 24,
       radius: 20,
     });
-
     return clusters(this.state.mapOptions);
   };
 

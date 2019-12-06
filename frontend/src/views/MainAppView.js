@@ -95,7 +95,6 @@ class MainAppView extends React.Component {
     super(props);
     this.state = {
       homeOffers: [],
-      filteredHomeOffers: [],
       hover: false,
       hoverId: '',
       geolocation: {},
@@ -105,8 +104,12 @@ class MainAppView extends React.Component {
         lng: 19.01105,
       },
       offers: [],
+      // Filtering offers
+      filteredHomeOffers: [],
       currentActiveType: 'All',
-      isAlreadyFiltered: false,
+      dateDuration: 3,
+      radius: 0,
+      pinCenter: null,
       price: {
         min: 0,
         max: Infinity,
@@ -122,7 +125,7 @@ class MainAppView extends React.Component {
     if (state.offers.length === 0) {
       state.offers = props.homeOffers.slice(0, OFFERS_CHUNK);
     }
-    state.homeOffers = props.homeOffers.slice(0, 50);
+    state.homeOffers = props.homeOffers.slice(0, 500);
 
     return props.homeOffers;
   }
@@ -163,9 +166,6 @@ class MainAppView extends React.Component {
     this.setState({ center: childData });
   };
 
-  // Callback rerendering markers on Map
-  callbackRerenderMarkers = () => {};
-
   // Mouse enter handler for list view
   onMouseEnterHandler = (objId, objLat, objLng) => {
     if (!this.state.hover) {
@@ -183,10 +183,16 @@ class MainAppView extends React.Component {
     }
   };
 
-  priceChange = debounce(value => {
+  // OnChange handler for changing dropdown date values
+  handleDurationChange = async e => {
+    await this.setState({ dateDuration: parseInt(e) });
+    this.filterOffers();
+  };
+
+  priceChange = debounce(async value => {
     const currPrice = this.state.price;
     if (Array.isArray(value)) {
-      this.setState(prevState => ({
+      await this.setState(prevState => ({
         price: {
           ...prevState.price,
           min: value[0] * 1000,
@@ -195,7 +201,7 @@ class MainAppView extends React.Component {
       }));
     } else {
       if (value.dataset.min) {
-        this.setState(prevState => ({
+        await this.setState(prevState => ({
           price: {
             ...prevState.price,
             min: parseInt(value.value),
@@ -204,7 +210,7 @@ class MainAppView extends React.Component {
         }));
       }
       if (value.dataset.max) {
-        this.setState(prevState => ({
+        await this.setState(prevState => ({
           price: {
             ...prevState.price,
             min: currPrice.min,
@@ -214,35 +220,110 @@ class MainAppView extends React.Component {
       }
     }
 
-    this.filterByPrice();
+    this.filterOffers();
   }, 1000);
 
   // Filtering by offer type ('Wynajem','Sprzedaz','Zamiana')
-  filterByType = offerType => {
-    this.setState({ currentActiveType: offerType });
-    if (offerType === 'All') {
-      this.setState({ filteredHomeOffers: this.state.homeOffers });
-    } else {
-      const filteredOffers = this.state.homeOffers.filter(offer => {
-        return offer.type === offerType;
-      });
-      this.setState({ filteredHomeOffers: filteredOffers });
-      this.setState({ isAlreadyFiltered: true });
-    }
+  filterByType = async offerType => {
+    await this.setState({ currentActiveType: offerType });
+    this.filterOffers();
   };
 
-  // Filtering by offer price
-  filterByPrice = () => {
+  // Check if markers are within radius range
+  filterByDistance = async (mapsapi, radius, pinCenter) => {
+    await this.setState({ mapsapi });
+    await this.setState({ radius });
+    await this.setState({ pinCenter });
+
+    this.filterOffers();
+  };
+
+  // Accumulated filter
+  filterOffers = () => {
     const filteredOffers = this.state.homeOffers.filter(offer => {
+      // Parse string price to int value
       const splited = offer.price.split(' ');
       const intPrice = parseInt(splited.join(''));
 
-      if (
-        intPrice === intPrice &&
-        intPrice >= this.state.price.min &&
-        intPrice <= this.state.price.max
-      ) {
-        return offer;
+      const dateArr = offer.date.split('-');
+
+      const monthNames = [
+        'sty',
+        'lut',
+        'mar',
+        'kwi',
+        'maj',
+        'cze',
+        'lip',
+        'sie',
+        'wrz',
+        'paź',
+        'lis',
+        'gru',
+      ];
+
+      let day = dateArr[0];
+      let month = monthNames.indexOf(dateArr[1]);
+      let year = dateArr[2];
+
+      const dateFormat = new Date(year, month, parseInt(day) + 1)
+        .toISOString()
+        .replace(/T.*/, '')
+        .split('-')
+        .reverse()
+        .join('-');
+
+      const today = new Date();
+      let lastXDays = new Date();
+
+      if (this.state.dateDuration === 1) {
+        lastXDays = today;
+      } else {
+        lastXDays.setDate(today.getDate() - this.state.dateDuration + 1);
+      }
+
+      // Get distance from current offer to circle center
+      if (this.state.pinCenter) {
+        const distanceFromCenter = this.state.mapsapi.geometry.spherical.computeDistanceBetween(
+          { lat: () => offer.lat, lng: () => offer.long },
+          this.state.pinCenter,
+        );
+        if (
+          dateFormat >=
+            lastXDays
+              .toISOString()
+              .replace(/T.*/, '')
+              .split('-')
+              .reverse()
+              .join('-') &&
+          distanceFromCenter < this.state.radius - 100 &&
+          (this.state.currentActiveType === 'All'
+            ? offer.type
+            : offer.type === this.state.currentActiveType) &&
+          (offer.price !== ''
+            ? intPrice >= this.state.price.min && intPrice <= this.state.price.max
+            : offer)
+        ) {
+          return offer;
+        }
+      } else {
+        if (
+          dateFormat >=
+            lastXDays
+              .toISOString()
+              .replace(/T.*/, '')
+              .split('-')
+              .reverse()
+              .join('-') &&
+          (this.state.currentActiveType === 'All'
+            ? offer.type
+            : offer.type === this.state.currentActiveType) &&
+          (offer.price !== ''
+            ? intPrice >= this.state.price.min && intPrice <= this.state.price.max
+            : offer)
+        ) {
+          return offer;
+        }
       }
 
       return null;
@@ -250,31 +331,9 @@ class MainAppView extends React.Component {
 
     if (filteredOffers.length > 0) {
       this.setState({ filteredHomeOffers: filteredOffers });
-      this.setState({ isAlreadyFiltered: true });
     } else {
       this.setState({ filteredHomeOffers: [0] });
     }
-  };
-
-  // Check if markers are within radius range
-  filterByDistance = (mapsapi, radius, pinCenter) => {
-    const filteredOffers = this.state.filteredHomeOffers.filter(offer => {
-      const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
-        { lat: () => offer.lat, lng: () => offer.long },
-        pinCenter,
-      );
-
-      if (distanceFromCenter < radius - 100 && this.state.currentActiveType === 'All') {
-        return offer;
-      } else if (distanceFromCenter < radius - 100 && offer.type === this.state.currentActiveType) {
-        return offer;
-      }
-
-      return null;
-    });
-
-    this.setState({ isAlreadyFiltered: true });
-    this.setState({ filteredHomeOffers: filteredOffers });
   };
 
   render() {
@@ -290,6 +349,7 @@ class MainAppView extends React.Component {
             mapInstance={this.state.mapInstance}
             mapsapi={this.state.mapsapi}
             priceChange={this.priceChange}
+            handleDurationChange={this.handleDurationChange}
           />
         ) : (
           'Loading'

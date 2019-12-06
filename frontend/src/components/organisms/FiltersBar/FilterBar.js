@@ -156,7 +156,7 @@ class FilterBar extends React.Component {
             />
           )}
           <RangeSlider rangeValue={this.state.rangeValue} changeHandler={this.changeHandler} />
-          <Dropdown />
+          <Dropdown handleDurationChange={this.props.handleDurationChange} />
         </FilterBarRowTwo>
       </FilterBarWrapper>
     );

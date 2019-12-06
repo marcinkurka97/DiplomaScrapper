@@ -17,33 +17,11 @@ const slideInBottom = keyframes`
 const OffersWrapper = styled.div`
   height: 100%;
   width: 50%;
-  overflow-y: scroll;
-
-  /* width */
-  ::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 
   .offer-container {
     text-decoration: none;
     color: #5a6371;
-    overflow-y: hidden;
+    overflow-y: auto;
 
     .offer {
       width: 97.5%;
@@ -118,6 +96,29 @@ const OffersWrapper = styled.div`
 
   .infinite-scroll-component__outerdiv {
     height: 100%;
+
+    .infinite-scroll-component {
+      /* width */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    }
   }
 `;
 
@@ -132,7 +133,12 @@ const NoOffers = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   font-size: 24px;
+
+  p {
+    font-size: 14px;
+  }
 `;
 
 const OFFERS_CHUNK = 20;
@@ -173,10 +179,21 @@ class List extends React.Component {
             )
           }
           scrollableTarget="listWrapper"
-          style={{ overflowY: 'hidden' }}
         >
           {this.props.filteredHomeOffers.length === 1 && this.props.filteredHomeOffers[0] === 0 ? (
-            <NoOffers>Brak ofert 😔</NoOffers>
+            <NoOffers>
+              <span>
+                Brak ofert
+                <span role="img" aria-label="emoji">
+                  😔
+                </span>
+              </span>
+
+              <p>
+                Nie udało nam się znaleźć ofert, które odpowiadałyby Twoim oczekiwaniom. Spróbuj
+                zmienić kryteria wyszukiwania.
+              </p>
+            </NoOffers>
           ) : (
             this.props.filteredHomeOffers.map(scrape => {
               return (
