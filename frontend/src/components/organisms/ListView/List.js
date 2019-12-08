@@ -28,11 +28,13 @@ const OffersWrapper = styled.div`
   /* Track */
   ::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.backgroundDarkGray};
+    transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.body};
+    transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     border-radius: 10px;
   }
 
@@ -55,6 +57,7 @@ const OffersWrapper = styled.div`
       margin: 0 10px 10px 10px;
       border-radius: 6px;
       background: ${({ theme }) => theme.backgroundOffer};
+      transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
       animation: ${slideInBottom} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 

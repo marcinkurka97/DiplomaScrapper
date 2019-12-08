@@ -11,6 +11,7 @@ const FilterBarWrapper = styled.div`
   position: relative;
   height: 17.5vh;
   background: ${({ theme }) => theme.backgroundGray};
+  transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,7 +47,7 @@ const StyledButton = styled(Button)`
       // eslint-disable-next-line no-nested-ternary
       rent ? theme.orange : sell ? theme.green : swap ? theme.blue : theme.orange};
   }
-  transition: background 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 `;
 
 const Price = styled.h3`
@@ -103,6 +104,7 @@ class FilterBar extends React.Component {
       mapsapi,
       filterByDistance,
       handleDurationChange,
+      setDarkMode,
     } = this.props;
     const { rangeValue } = this.state;
     return (
@@ -157,7 +159,7 @@ class FilterBar extends React.Component {
               data-max
             />
           </Price>
-          <DarkModeSwitch />
+          <DarkModeSwitch setDarkMode={setDarkMode} />
         </FilterBarRowOne>
         <FilterBarRowTwo>
           {mapsApiLoaded && (

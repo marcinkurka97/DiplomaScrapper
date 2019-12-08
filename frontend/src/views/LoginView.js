@@ -1,7 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
-import { theme } from '../theme/mainTheme';
 import Input from '../components/atoms/Input/Input';
 import Button from '../components/atoms/Button/Button';
 import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
@@ -28,7 +27,7 @@ const Logo = styled.div`
 const LoginFormContainer = styled.div`
   width: 33%;
   height: 100%;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.backgroundOffer};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,6 +35,7 @@ const LoginFormContainer = styled.div`
   label {
     padding: 0 0 12px 0;
     font-weight: 500;
+    color: ${({ theme }) => theme.body};
   }
 `;
 
@@ -54,7 +54,7 @@ const LoginForm = styled.div`
 
   .pass-forgot {
     width: 131px;
-    color: ${theme.blue};
+    color: ${({ theme }) => theme.blue};
     font-size: 17px;
     line-height: normal;
     text-decoration: none;
@@ -70,15 +70,17 @@ const LoginTitle = styled(Heading)`
   margin: 0 0 18px 0;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
+  color: ${({ theme }) => theme.body};
 `;
 
 const CreateAccounts = styled.p`
   margin: 0 0 30px 0;
   font-family: 'Montserrat', sans-serif;
+  color: ${({ theme }) => theme.body};
 
   a {
     margin-left: 6px;
-    color: ${theme.blue};
+    color: ${({ theme }) => theme.blue};
     font-size: 17px;
     line-height: normal;
     text-decoration: none;
@@ -98,7 +100,7 @@ const StyledInput = styled(Input)`
 
 const StyledButton = styled(Button)`
   border-radius: 0;
-  background-color: ${theme.blue};
+  background-color: ${({ theme }) => theme.blue};
   height: 52px;
   font-size: 20px;
   font-weight: 600;

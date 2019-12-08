@@ -32,6 +32,7 @@ const StyledSliderWithTooltip = styled(SliderWithTooltip)`
   .rc-slider-rail {
     height: 10px;
     background: ${({ theme }) => theme.backgroundDarkGray};
+    transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 `;
 

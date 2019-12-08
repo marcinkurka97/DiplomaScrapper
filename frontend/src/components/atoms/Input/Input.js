@@ -12,6 +12,7 @@ const Input = styled.input`
   border: none;
   border-radius: 20px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   ::placeholder {
     letter-spacing: 1px;

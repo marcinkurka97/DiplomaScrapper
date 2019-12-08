@@ -14,6 +14,7 @@ const StyledHeader = styled.header`
   align-items: center;
   height: 12.5vh;
   background: ${({ theme }) => theme.backgroundDarkGray};
+  transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   padding: 0 30px;
 `;
 

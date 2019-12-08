@@ -11,51 +11,48 @@ const MapWrapper = styled.div`
   height: 100%;
 `;
 
-const mapStyles =
-  localStorage.getItem('dark') === 'true'
-    ? [
-        {
-          featureType: 'all',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#222222',
-            },
-          ],
-        },
-        {
-          featureType: 'all',
-          elementType: 'labels.text',
-          stylers: [
-            {
-              color: '#eeeeee',
-            },
-            {
-              visibility: 'simplified',
-            },
-          ],
-        },
-        {
-          featureType: 'landscape.man_made',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#263b3e',
-            },
-          ],
-        },
-        {
-          featureType: 'road',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#38414e',
-            },
-          ],
-        },
-      ]
-    : '';
-
+const mapLightStyles = [];
+const mapDarkStyles = [
+  {
+    featureType: 'all',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#222222',
+      },
+    ],
+  },
+  {
+    featureType: 'all',
+    elementType: 'labels.text',
+    stylers: [
+      {
+        color: '#eeeeee',
+      },
+      {
+        visibility: 'simplified',
+      },
+    ],
+  },
+  {
+    featureType: 'landscape.man_made',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#263b3e',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#38414e',
+      },
+    ],
+  },
+];
 // Default options for Google Maps
 const MAP = {
   defaultZoom: 8,
@@ -63,13 +60,13 @@ const MAP = {
     minZoom: 6,
     maxZoom: 24,
   },
-  styles: mapStyles,
 };
 
 class GoogleMap extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.mapRef = React.createRef();
     const { myLatLng } = this.props;
 
     this.state = {
@@ -171,13 +168,14 @@ class GoogleMap extends React.PureComponent {
   };
 
   // On every map change (zoom, dragging) rerender displayed clusters
-  handleMapChange = ({ center, zoom, bounds }) => {
+  handleMapChange = ({ center, zoom, bounds, styles }) => {
     this.setState(
       {
         mapOptions: {
           center,
           zoom,
           bounds,
+          styles,
         },
       },
       () => {
@@ -195,18 +193,24 @@ class GoogleMap extends React.PureComponent {
   };
 
   render() {
-    const { center, hoverState, hoverIdState } = this.props;
+    const { center, hoverState, hoverIdState, darkModeEnabled } = this.props;
     const { clusters, showingInfoWindow, activeMarker, selectedPlace } = this.state;
     return (
       <MapWrapper>
         <GoogleMapReact
+          ref={this.mapRef}
           defaultZoom={MAP.defaultZoom}
           defaultCenter={{
             lat: 50.264821,
             lng: 19.01105,
           }}
           center={center}
-          options={MAP}
+          options={{
+            options: MAP.options,
+            styles:
+              (localStorage.getItem('dark') === 'true' ? mapDarkStyles : mapLightStyles) ||
+              (darkModeEnabled ? mapDarkStyles : mapLightStyles),
+          }}
           onChange={this.handleMapChange}
           onClick={this.onMapClicked}
           yesIWantToUseGoogleMapApiInternals

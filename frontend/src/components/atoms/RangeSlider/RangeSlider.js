@@ -22,6 +22,7 @@ const StyledRange = styled(Range)`
   .rc-slider-rail {
     height: 10px;
     background: ${({ theme }) => theme.backgroundDarkGray} !important;
+    transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   .rc-slider-step {
@@ -36,6 +37,7 @@ const StyledRange = styled(Range)`
     .rc-slider-mark-text {
       width: 70px;
       transition: font-size 0.1s ease-in;
+      color: ${({ theme }) => theme.body};
     }
 
     .rc-slider-mark-text-active {

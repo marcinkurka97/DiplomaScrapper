@@ -48,7 +48,7 @@ const SwitchWrapper = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    transition: 0.4s;
+    transition: 0.5s;
   }
 
   .slider:before {
@@ -58,7 +58,7 @@ const SwitchWrapper = styled.div`
     height: 22px;
     left: 4px;
     position: absolute;
-    transition: 0.4s;
+    transition: 0.5s;
     width: 22px;
   }
 
@@ -79,14 +79,24 @@ const SwitchWrapper = styled.div`
   }
 `;
 
-const DarkModeSwitch = () => {
+const DarkModeSwitch = ({ setDarkMode }) => {
   const themeState = useTheme();
+
+  React.useEffect(() => {
+    if (localStorage.getItem('dark') === 'true') {
+      document.getElementById('checkbox').checked = true;
+    } else {
+      document.getElementById('checkbox').checked = false;
+    }
+  });
 
   const switchTheme = e => {
     if (e.target.checked) {
       themeState.toggle(true);
+      setDarkMode(true);
     } else {
       themeState.toggle(false);
+      setDarkMode(false);
     }
   };
 

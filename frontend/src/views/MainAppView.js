@@ -17,6 +17,7 @@ const ListAndMapWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   background: ${({ theme }) => theme.backgroundGray};
+  transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 `;
 
 const AppWrapper = styled.div`
@@ -172,6 +173,7 @@ class MainAppView extends React.Component {
       mapsApiLoaded: false,
       mapInstance: null,
       mapsapi: null,
+      darkModeEnabled: localStorage.getItem('dark') === 'true',
     };
   }
 
@@ -211,6 +213,11 @@ class MainAppView extends React.Component {
 
   setMapAPI = mapAPI => {
     this.setState({ mapsapi: mapAPI });
+  };
+
+  // Set darkMode state
+  setDarkMode = value => {
+    this.setState({ darkModeEnabled: value });
   };
 
   handleSettingOffersState = newOffers => {
@@ -373,6 +380,7 @@ class MainAppView extends React.Component {
       hover,
       hoverId,
       center,
+      darkModeEnabled,
     } = this.state;
     return (
       <AppWrapper>
@@ -387,6 +395,7 @@ class MainAppView extends React.Component {
             mapsapi={mapsapi}
             priceChange={this.priceChange}
             handleDurationChange={this.handleDurationChange}
+            setDarkMode={this.setDarkMode}
           />
         ) : (
           <FilterBarLoading>
@@ -416,6 +425,7 @@ class MainAppView extends React.Component {
               setMapsApiLoaded={this.setMapsApiLoaded}
               setMapInstance={this.setMapInstance}
               setMapAPI={this.setMapAPI}
+              darkModeEnabled={darkModeEnabled}
             />
           </ListAndMapWrapper>
         ) : (

@@ -56,6 +56,7 @@ class Geolocation extends React.Component {
       setMapsApiLoaded,
       setMapInstance,
       setMapAPI,
+      darkModeEnabled,
     } = this.props;
     return (
       <GoogleMap
@@ -68,6 +69,7 @@ class Geolocation extends React.Component {
         setMapsApiLoaded={setMapsApiLoaded}
         setMapInstance={setMapInstance}
         setMapAPI={setMapAPI}
+        darkModeEnabled={darkModeEnabled}
       />
     );
   }

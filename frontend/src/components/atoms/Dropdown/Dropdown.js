@@ -16,6 +16,7 @@ const DropdownWrapper = styled.span`
     border: 0;
     margin: 0;
     border-radius: 20px;
+    transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 
     option {
       height: 20px;
