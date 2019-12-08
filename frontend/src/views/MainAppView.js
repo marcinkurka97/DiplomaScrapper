@@ -384,7 +384,7 @@ class MainAppView extends React.Component {
     } = this.state;
     return (
       <AppWrapper>
-        <Header />
+        <Header darkModeEnabled={darkModeEnabled} />
         {mapsApiLoaded ? (
           <FilterBar
             filterByType={this.filterByType}

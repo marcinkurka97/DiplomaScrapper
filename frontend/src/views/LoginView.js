@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
-import Input from '../components/atoms/Input/Input';
-import Button from '../components/atoms/Button/Button';
+import LoginForm from '../components/organisms/LoginForm/LoginForm';
 import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
 import CheckBox from '../components/atoms/CheckBox/CheckBox';
 import Heading from '../components/atoms/Heading/Heading';
-import LogoSVG from '../assets/logo3.svg';
+import LogoSVG from '../assets/logo1_1.svg';
+import LogoSVGDark from '../assets/logo3_1.svg';
 
 const LoginWrapper = styled.div`
   width: 100vw;
@@ -15,7 +15,6 @@ const LoginWrapper = styled.div`
 `;
 
 const Logo = styled.div`
-  background: url(${LogoSVG});
   width: 100%;
   height: 17.5vh;
   background-repeat: no-repeat;
@@ -39,7 +38,7 @@ const LoginFormContainer = styled.div`
   }
 `;
 
-const LoginForm = styled.div`
+const StyledLoginForm = styled.div`
   width: 100%;
   padding: 0 15%;
   display: flex;
@@ -88,25 +87,6 @@ const CreateAccounts = styled.p`
   }
 `;
 
-const StyledInput = styled(Input)`
-  box-shadow: 0;
-  border-radius: 0;
-  border: 1px solid rgba(36, 28, 21, 0.3);
-  background-color: #fff;
-  padding: 0 15px;
-  height: 52px;
-  margin: 0 0 24px 0;
-`;
-
-const StyledButton = styled(Button)`
-  border-radius: 0;
-  background-color: ${({ theme }) => theme.blue};
-  height: 52px;
-  font-size: 20px;
-  font-weight: 600;
-  margin: 20px 0 0 0;
-`;
-
 const RememberMe = styled.label`
   display: flex;
   justify-content: center;
@@ -122,7 +102,10 @@ const RememberMe = styled.label`
 class LoginView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { checked: false };
+    this.state = {
+      checked: false,
+      darkMode: localStorage.getItem('dark') === 'true',
+    };
   }
 
   handleCheckboxChange = event => {
@@ -130,24 +113,28 @@ class LoginView extends React.Component {
   };
 
   render() {
-    const { checked } = this.state;
+    const { checked, darkMode } = this.state;
     return (
       <LoginWrapper>
         <LoginFormContainer>
-          <LoginForm>
-            <Logo />
+          <StyledLoginForm>
+            <Logo
+              style={{
+                background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
+                width: '100%',
+                height: '17.5vh',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                marginBottom: '12px',
+              }}
+            />
             <LoginTitle>Logowanie</LoginTitle>
             <CreateAccounts>
               Nie masz jeszcze konta?
               <NavLink to="/register">Załóż je!</NavLink>
             </CreateAccounts>
-            <label htmlFor="username">Użytkownik</label>
-            <StyledInput id="username" />
-            <label htmlFor="password">Hasło</label>
-            <StyledInput id="password" type="password" />
-            <StyledButton as={NavLink} to="/">
-              Zaloguj
-            </StyledButton>
+            <LoginForm />
             <RememberMe>
               <CheckBox checked={checked} onChange={this.handleCheckboxChange} />
               <span>Zapamiętaj mnie</span>
@@ -155,7 +142,7 @@ class LoginView extends React.Component {
             <a className="pass-forgot" href="/register">
               Przypomnij hasło
             </a>
-          </LoginForm>
+          </StyledLoginForm>
         </LoginFormContainer>
         <LoginAnimation width="67%" height="100%" />
       </LoginWrapper>

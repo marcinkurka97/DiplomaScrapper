@@ -2,9 +2,11 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
 import { faHome, faStar, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
 import Button from '../../atoms/Button/Button';
 import LinkItem from '../../molecules/LinkItem/LinkItem';
-import LogoSVG from '../../../assets/logo2.svg';
+import LogoSVG from '../../../assets/logo1.svg';
+import LogoSVGDark from '../../../assets/logo3.svg';
 import { theme as mainTheme } from '../../../theme/mainTheme';
 
 const StyledHeader = styled.header`
@@ -19,12 +21,11 @@ const StyledHeader = styled.header`
 `;
 
 const Logo = styled.div`
-  background: url(${LogoSVG});
   width: 200px;
   height: 8vh;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  background-position: center center !important;
 `;
 
 const LoginPanel = styled.div`
@@ -48,11 +49,20 @@ const NavPanel = styled.div`
   }
 `;
 
-export default function Header() {
+function Header({ darkModeEnabled }) {
   return (
     <StyledHeader>
       <NavPanel>
-        <Logo />
+        <Logo
+          style={{
+            background: `url(${darkModeEnabled ? LogoSVGDark : LogoSVG})`,
+            width: '200px',
+            height: '8vh',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center center',
+          }}
+        />
         <LinkItem theme={mainTheme} icon={faSearch} linkTitle="Search" />
         <LinkItem theme={mainTheme} icon={faHome} linkTitle="Offers" />
         <LinkItem theme={mainTheme} icon={faPlus} linkTitle="Add offer" />
@@ -69,3 +79,10 @@ export default function Header() {
     </StyledHeader>
   );
 }
+
+const mapStateToProps = state => {
+  const { userId } = state;
+  return { userId };
+};
+
+export default connect(mapStateToProps)(Header);

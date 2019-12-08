@@ -1,28 +1,46 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const session = require("express-session");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const passport = require("passport");
+const morgan = require("morgan");
+const cors = require("cors");
+const LocalStrategy = require("passport-local").Strategy;
+const routes = require("./routes");
+const User = require("./models/User");
 import { getOffersObj } from "./lib/scrapper";
-import "./lib/cron";
 import db from "./lib/db";
 
-// Setup Express Server
+const PORT = 9000;
+
 const app = express();
+app.use(bodyParser.json());
+app.use(morgan("combined"));
 app.use(cors());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-// End point for frontend to receive scrape data
-app.get("/scrape", async (req, res, next) => {
-  console.log("Scraping!");
-  const offersPromise = await getOffersObj();
-  res.json({ offersPromise });
-});
-
-app.get("/data", async (req, res, next) => {
-  // Get the scrape data
-  const olxScrapes = db.get("olxScrape").value();
-
-  // Respond with JSON
-  res.json(olxScrapes);
-});
-
-app.listen(2093, () =>
-  console.log(`App running on port http://localhost:2093`)
+app.use(
+  session({
+    secret: "marcin",
+    resave: false,
+    saveUninitialized: true
+  })
 );
+app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+mongoose.connect(
+  "mongodb+srv://admin:admin@homepin-mscnm.gcp.mongodb.net/HomePin?retryWrites=true&w=majority",
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
+
+const conn = mongoose.connection;
+conn.on("error", console.error.bind(console, "connection error:"));
+conn.once("open", () => {
+  console.log("Connected to mlab database!");
+  app.listen(PORT, () => console.log(`App is listening on port ${PORT}!`));
+  app.use("/api", routes);
+});

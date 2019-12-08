@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { NavLink } from 'react-router-dom';
 import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
-import Input from '../components/atoms/Input/Input';
-import Button from '../components/atoms/Button/Button';
+import RegisterForm from '../components/organisms/RegisterForm/RegisterForm';
 import Heading from '../components/atoms/Heading/Heading';
-import LogoSVG from '../assets/logo3.svg';
+import LogoSVG from '../assets/logo1_1.svg';
+import LogoSVGDark from '../assets/logo3_1.svg';
 
 const LoginWrapper = styled.div`
   width: 100vw;
@@ -13,15 +12,7 @@ const LoginWrapper = styled.div`
   display: flex;
 `;
 
-const Logo = styled.div`
-  background: url(${LogoSVG});
-  width: 100%;
-  height: 17.5vh;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center center;
-  margin-bottom: 12px;
-`;
+const Logo = styled.div``;
 
 const LoginFormContainer = styled.div`
   width: 33%;
@@ -61,46 +52,37 @@ const LoginTitle = styled(Heading)`
   color: ${({ theme }) => theme.body};
 `;
 
-const StyledInput = styled(Input)`
-  box-shadow: 0;
-  border-radius: 0;
-  border: 1px solid rgba(36, 28, 21, 0.3);
-  background-color: #fff;
-  padding: 0 15px;
-  height: 52px;
-  margin: 0 0 24px 0;
-`;
+class LoginView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { darkMode: localStorage.getItem('dark') === 'true' };
+  }
 
-const StyledButton = styled(Button)`
-  border-radius: 0;
-  background-color: ${({ theme }) => theme.blue};
-  height: 52px;
-  font-size: 20px;
-  font-weight: 600;
-  margin: 20px 0 0 0;
-`;
-
-const LoginView = () => {
-  return (
-    <LoginWrapper>
-      <LoginFormContainer>
-        <LoginForm>
-          <Logo />
-          <LoginTitle>Rejestracja</LoginTitle>
-          <label htmlFor="email">Email</label>
-          <StyledInput id="email" type="email" />
-          <label htmlFor="username">Użytkownik</label>
-          <StyledInput id="username" />
-          <label htmlFor="password">Hasło</label>
-          <StyledInput id="password" type="password" />
-          <StyledButton as={NavLink} to="/">
-            Zarejestruj się
-          </StyledButton>
-        </LoginForm>
-      </LoginFormContainer>
-      <LoginAnimation width="68%" height="100%" />
-    </LoginWrapper>
-  );
-};
+  render() {
+    const { darkMode } = this.state;
+    return (
+      <LoginWrapper>
+        <LoginFormContainer>
+          <LoginForm>
+            <Logo
+              style={{
+                background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
+                width: '100%',
+                height: '17.5vh',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                marginBottom: '12px',
+              }}
+            />
+            <LoginTitle>Rejestracja</LoginTitle>
+            <RegisterForm />
+          </LoginForm>
+        </LoginFormContainer>
+        <LoginAnimation width="68%" height="100%" />
+      </LoginWrapper>
+    );
+  }
+}
 
 export default LoginView;
