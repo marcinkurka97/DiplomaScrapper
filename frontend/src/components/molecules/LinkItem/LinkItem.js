@@ -13,6 +13,10 @@ const LinkItemContainer = styled.div`
   svg {
     margin: 0 10px 0 0;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const LinkItems = ({ icon, linkTitle }) => {

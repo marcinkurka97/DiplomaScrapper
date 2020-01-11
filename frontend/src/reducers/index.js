@@ -1,9 +1,15 @@
-import { AUTH_SUCCESS, REG_SUCCESS, FETCH_REQUEST, FETCH_SUCCESS } from '../actions';
+import {
+  AUTH_SUCCESS,
+  REG_SUCCESS,
+  LOGOUT_SUCCESS,
+  FETCH_REQUEST,
+  FETCH_SUCCESS,
+} from '../actions';
 
 const initialState = {
   homeOffers: [],
   isLoading: false,
-  userId: null,
+  userID: null,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -17,6 +23,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userID: action.payload.data._id,
+      };
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        userID: null,
       };
     case FETCH_REQUEST:
       return {

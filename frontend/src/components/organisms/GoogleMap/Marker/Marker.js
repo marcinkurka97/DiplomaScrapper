@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { keyframes, css } from 'styled-components';
+import styled from '@emotion/styled';
+import { keyframes, css } from '@emotion/core';
 import HomeIcon from '../../../../assets/HomeIcon';
 
 const MarkerInGroupStyled = styled.div`
@@ -79,10 +80,10 @@ const scaleInCenter = keyframes`
 
 const MarkerInfoWindowWrapper = styled.div`
   position: relative;
-  left: -150px;
-  top: -160px;
-  min-width: 350px;
-  height: 100px;
+  left: -175px;
+  top: -220px;
+  min-width: 400px;
+  height: 150px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -92,6 +93,18 @@ const MarkerInfoWindowWrapper = styled.div`
   transition: all 1s ease-out;
   animation: ${scaleInCenter} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   z-index: 10;
+
+  &:after {
+    background: #fff;
+    content: '';
+    height: 25px;
+    left: 50%;
+    position: absolute;
+    top: 100%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 25px;
+    z-index: -1;
+  }
 
   .marker-window__img {
     width: 40%;
@@ -105,23 +118,23 @@ const MarkerInfoWindowWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: #000;
+    color: ${({ theme }) => theme.black};
 
-    .marker-window__title {
-      font-size: 12px;
-    }
-
-    .marker-window__price {
-      font-size: 16px;
-      text-align: center;
-    }
-
-    .marker-window__link {
+    .marker-window__right__title {
       font-size: 14px;
-      text-align: center;
-      text-decoration: none;
+      margin: 0;
+    }
+
+    .marker-window__right__price {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .marker-window__right__link {
+      width: auto;
+      font-size: 14px;
       font-weight: 500;
-      transition: transform 0.2s ease-in;
+      color: ${({ theme }) => theme.blue} !important;
 
       &:hover {
         color: #6d6d6d;
@@ -130,51 +143,53 @@ const MarkerInfoWindowWrapper = styled.div`
   }
 `;
 
-class Marker extends React.PureComponent {
-  render() {
-    const {
-      inGroup,
-      colorType,
-      hoverIdState,
-      hoverState,
-      markerId,
-      showingInfoWindow,
-      keyId,
-      selectedPlace,
-      markerTitle,
-      markerImg,
-      markerPrice,
-      markerLink,
-      markerType,
-    } = this.props;
-    return (
-      <div>
-        {/* If there is more than 1 marker nearby create group with marker icon and '+quantinty' */}
-        {inGroup ? (
-          <MarkerInGroupStyled>
-            <HomeIcon colorType={colorType} />
-          </MarkerInGroupStyled>
-        ) : (
-          <MarkerStyled hoverState={hoverState} hoverIdState={hoverIdState} markerId={markerId}>
-            <HomeIcon colorType={markerType} />
-          </MarkerStyled>
-        )}
-        {showingInfoWindow && keyId === selectedPlace && (
-          <MarkerInfoWindowWrapper>
-            <img alt={markerTitle} className="marker-window__img" src={markerImg} />
-            <div className="marker-window__right">
-              <h4 className="marker-window__right__title">{markerTitle}</h4>
-              <p className="marker-window__right__price">{markerPrice}</p>
-              <a className="marker-window__right__link" href={markerLink}>
-                Przejdź do oferty
-              </a>
-            </div>
-          </MarkerInfoWindowWrapper>
-        )}
-      </div>
-    );
-  }
-}
+const Marker = ({
+  inGroup,
+  colorType,
+  hoverIdState,
+  hoverState,
+  markerId,
+  showingInfoWindow,
+  keyId,
+  selectedPlace,
+  markerTitle,
+  markerImg,
+  markerPrice,
+  markerLink,
+  markerType,
+}) => {
+  return (
+    <div>
+      {/* If there is more than 1 marker nearby create group with marker icon and '+quantinty' */}
+      {inGroup ? (
+        <MarkerInGroupStyled id="marker-grouped">
+          <HomeIcon colorType={colorType} />
+        </MarkerInGroupStyled>
+      ) : (
+        <MarkerStyled
+          id="marker-solo"
+          hoverState={hoverState}
+          hoverIdState={hoverIdState}
+          markerId={markerId}
+        >
+          <HomeIcon colorType={markerType} />
+        </MarkerStyled>
+      )}
+      {showingInfoWindow && keyId === selectedPlace && (
+        <MarkerInfoWindowWrapper id="info-window">
+          <img alt={markerTitle} className="marker-window__img" src={markerImg} />
+          <div className="marker-window__right">
+            <h4 className="marker-window__right__title">{markerTitle}</h4>
+            <p className="marker-window__right__price">{markerPrice}</p>
+            <a className="marker-window__right__link" href={markerLink}>
+              Przejdź do oferty
+            </a>
+          </div>
+        </MarkerInfoWindowWrapper>
+      )}
+    </div>
+  );
+};
 
 Marker.defaultProps = {
   inGroup: false,

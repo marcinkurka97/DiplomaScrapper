@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import LoginAnimation from '../components/atoms/LoginAnimation/LoginAnimation';
 import RegisterForm from '../components/organisms/RegisterForm/RegisterForm';
@@ -52,37 +52,32 @@ const LoginTitle = styled(Heading)`
   color: ${({ theme }) => theme.body};
 `;
 
-class LoginView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { darkMode: localStorage.getItem('dark') === 'true' };
-  }
+const RegisterView = () => {
+  // eslint-disable-next-line no-unused-vars
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('dark') === 'true');
 
-  render() {
-    const { darkMode } = this.state;
-    return (
-      <LoginWrapper>
-        <LoginFormContainer>
-          <LoginForm>
-            <Logo
-              style={{
-                background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
-                width: '100%',
-                height: '17.5vh',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
-                backgroundPosition: 'center center',
-                marginBottom: '12px',
-              }}
-            />
-            <LoginTitle>Rejestracja</LoginTitle>
-            <RegisterForm />
-          </LoginForm>
-        </LoginFormContainer>
-        <LoginAnimation width="68%" height="100%" />
-      </LoginWrapper>
-    );
-  }
-}
+  return (
+    <LoginWrapper>
+      <LoginFormContainer>
+        <LoginForm>
+          <Logo
+            style={{
+              background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
+              width: '100%',
+              height: '17.5vh',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+              marginBottom: '12px',
+            }}
+          />
+          <LoginTitle>Rejestracja</LoginTitle>
+          <RegisterForm />
+        </LoginForm>
+      </LoginFormContainer>
+      <LoginAnimation width="68%" height="100%" />
+    </LoginWrapper>
+  );
+};
 
-export default LoginView;
+export default RegisterView;

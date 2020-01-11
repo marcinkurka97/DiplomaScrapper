@@ -12,6 +12,10 @@ export const REG_REQUEST = 'REG_REQUEST';
 export const REG_SUCCESS = 'REG_SUCCESS';
 export const REG_FAILURE = 'REG_FAILURE';
 
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
+
 export const authenticate = (username, password) => dispatch => {
   dispatch({ type: AUTH_REQUEST });
 
@@ -21,7 +25,6 @@ export const authenticate = (username, password) => dispatch => {
       password,
     })
     .then(payload => {
-      console.log(payload);
       dispatch({ type: AUTH_SUCCESS, payload });
     })
     .catch(err => {
@@ -40,7 +43,6 @@ export const register = (username, email, password) => dispatch => {
       password,
     })
     .then(payload => {
-      console.log(payload);
       dispatch({ type: REG_SUCCESS, payload });
     })
     .catch(err => {
@@ -49,11 +51,26 @@ export const register = (username, email, password) => dispatch => {
     });
 };
 
+export const logout = () => dispatch => {
+  dispatch({ type: LOGOUT_REQUEST });
+
+  return axios
+    .post('http://localhost:9000/api/user/logout')
+    .then(payload => {
+      console.log(payload);
+      dispatch({ type: LOGOUT_SUCCESS, payload });
+    })
+    .catch(err => {
+      console.log(err);
+      dispatch({ type: LOGOUT_FAILURE });
+    });
+};
+
 export const fetchItems = () => dispatch => {
   dispatch({ type: FETCH_REQUEST });
 
   return axios
-    .get('http://localhost:9000/api/scrapes/getData')
+    .get('http://localhost:9000/api/offers/getOffers')
     .then(({ data }) => {
       dispatch({
         type: FETCH_SUCCESS,

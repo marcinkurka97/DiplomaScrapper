@@ -116,11 +116,11 @@ class ClusterMarker extends React.PureComponent {
       return null;
     });
 
-    if (rentCounter > sellCounter && rentCounter > swapCounter) {
+    if (rentCounter >= sellCounter && rentCounter >= swapCounter) {
       this.setState({ colorType: 'Mieszkania » Wynajem' });
-    } else if (sellCounter > rentCounter && sellCounter > swapCounter) {
+    } else if (sellCounter >= rentCounter && sellCounter >= swapCounter) {
       this.setState({ colorType: 'Mieszkania » Sprzedaż' });
-    } else if (swapCounter > rentCounter && swapCounter > sellCounter) {
+    } else if (swapCounter >= rentCounter && swapCounter >= sellCounter) {
       this.setState({ colorType: 'Mieszkania » Zamiana' });
     }
   };

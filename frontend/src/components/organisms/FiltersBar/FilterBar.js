@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../atoms/Button/Button';
 import RangeSlider from '../../atoms/RangeSlider/RangeSlider';
@@ -51,6 +51,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Price = styled.h3`
+  margin-left: 5%;
   width: 15%;
   display: flex;
   align-items: center;
@@ -82,99 +83,91 @@ const FilterBarRowTwo = styled.div`
   align-items: center;
 `;
 
-class FilterBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { rangeValue: [0, 1.5] };
-  }
+const FilterBar = ({
+  currentActiveType,
+  filterByType,
+  priceChange,
+  mapsApiLoaded,
+  mapInstance,
+  mapsapi,
+  filterByDistance,
+  handleDurationChange,
+  setDarkMode,
+}) => {
+  const [rangeValue, setRangeValue] = useState([0, 1.5]);
 
-  changeHandler = value => {
-    const { priceChange } = this.props;
-    this.setState({ rangeValue: value });
+  const changeHandler = value => {
+    setRangeValue(value);
     priceChange(value);
   };
 
-  render() {
-    const {
-      currentActiveType,
-      filterByType,
-      priceChange,
-      mapsApiLoaded,
-      mapInstance,
-      mapsapi,
-      filterByDistance,
-      handleDurationChange,
-      setDarkMode,
-    } = this.props;
-    const { rangeValue } = this.state;
-    return (
-      <FilterBarWrapper>
-        <FilterBarRowOne>
-          <TypeButtons>
-            <StyledButton
-              swap
-              dark
-              onClick={() => filterByType('All')}
-              active={currentActiveType === 'All'}
-            >
-              All
-            </StyledButton>
-            <StyledButton
-              rent
-              dark
-              onClick={() => filterByType('Mieszkania » Wynajem')}
-              active={currentActiveType === 'Mieszkania » Wynajem'}
-            >
-              Wynajem
-            </StyledButton>
-            <StyledButton
-              sell
-              dark
-              onClick={() => filterByType('Mieszkania » Sprzedaż')}
-              active={currentActiveType === 'Mieszkania » Sprzedaż'}
-            >
-              Sprzedaż
-            </StyledButton>
-            <StyledButton
-              swap
-              dark
-              onClick={() => filterByType('Mieszkania » Zamiana')}
-              active={currentActiveType === 'Mieszkania » Zamiana'}
-            >
-              Zamiana
-            </StyledButton>
-          </TypeButtons>
-          <Price>
-            <StyledInput
-              type="number"
-              placeholder={`${rangeValue[0] * 1000} zł`}
-              onChange={event => priceChange(event.target)}
-              data-min
-            />
-            <span>-</span>
-            <StyledInput
-              type="number"
-              placeholder={`${rangeValue[1] * 1000} zł`}
-              onChange={event => priceChange(event.target)}
-              data-max
-            />
-          </Price>
-          <DarkModeSwitch setDarkMode={setDarkMode} />
-        </FilterBarRowOne>
-        <FilterBarRowTwo>
-          {mapsApiLoaded && (
-            <SearchBox
-              mapInstance={mapInstance}
-              mapsapi={mapsapi}
-              filterByDistance={filterByDistance}
-            />
-          )}
-          <RangeSlider rangeValue={rangeValue} changeHandler={this.changeHandler} />
-          <Dropdown handleDurationChange={handleDurationChange} />
-        </FilterBarRowTwo>
-      </FilterBarWrapper>
-    );
-  }
-}
+  return (
+    <FilterBarWrapper>
+      <FilterBarRowOne>
+        <TypeButtons>
+          <StyledButton
+            swap
+            dark
+            onClick={() => filterByType('All')}
+            active={currentActiveType === 'All'}
+          >
+            Wszystko
+          </StyledButton>
+          <StyledButton
+            rent
+            dark
+            onClick={() => filterByType('Mieszkania » Wynajem')}
+            active={currentActiveType === 'Mieszkania » Wynajem'}
+          >
+            Wynajem
+          </StyledButton>
+          <StyledButton
+            sell
+            dark
+            onClick={() => filterByType('Mieszkania » Sprzedaż')}
+            active={currentActiveType === 'Mieszkania » Sprzedaż'}
+          >
+            Sprzedaż
+          </StyledButton>
+          <StyledButton
+            swap
+            dark
+            onClick={() => filterByType('Mieszkania » Zamiana')}
+            active={currentActiveType === 'Mieszkania » Zamiana'}
+          >
+            Zamiana
+          </StyledButton>
+        </TypeButtons>
+        <Price>
+          <StyledInput
+            type="number"
+            placeholder={`${rangeValue[0] * 1000} zł`}
+            onChange={event => priceChange(event.target)}
+            data-min
+          />
+          <span>-</span>
+          <StyledInput
+            type="number"
+            placeholder={`${rangeValue[1] * 1000} zł`}
+            onChange={event => priceChange(event.target)}
+            data-max
+          />
+        </Price>
+        <DarkModeSwitch setDarkMode={setDarkMode} />
+      </FilterBarRowOne>
+      <FilterBarRowTwo>
+        {mapsApiLoaded && (
+          <SearchBox
+            mapInstance={mapInstance}
+            mapsapi={mapsapi}
+            filterByDistance={filterByDistance}
+          />
+        )}
+        <RangeSlider rangeValue={rangeValue} changeHandler={changeHandler} />
+        <Dropdown handleDurationChange={handleDurationChange} />
+      </FilterBarRowTwo>
+    </FilterBarWrapper>
+  );
+};
 
 export default FilterBar;

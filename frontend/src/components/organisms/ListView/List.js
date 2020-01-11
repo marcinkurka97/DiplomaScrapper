@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { theme as MainTheme } from '../../../theme/mainTheme';
+import { connect } from 'react-redux';
+import ListItem from '../../molecules/ListItem/ListItem';
 
 const slideInBottom = keyframes`
   0% {
@@ -29,11 +30,12 @@ const OffersWrapper = styled.div`
   ::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.backgroundDarkGray};
     transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 10px;
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.body};
+    background: ${({ theme }) => theme.sliderHandle};
     transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     border-radius: 10px;
   }
@@ -85,17 +87,23 @@ const OffersWrapper = styled.div`
 
       .offers__desc-container {
         width: 65%;
+        height: 70%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
       }
 
       .offer__title {
         font-size: 16px;
+        margin: 0;
       }
 
       .offer__desc {
-        margin: 10px 0;
+        margin: 0;
         font-size: 12px;
         display: flex;
         justify-content: flex-start;
+        align-self: flex-start;
 
         .offer__localization {
           margin: 0 10px 0 0;
@@ -110,12 +118,27 @@ const OffersWrapper = styled.div`
         }
       }
 
-      .offer__price {
+      .offer__priceAndStar {
         color: #1ec66c;
         width: 13%;
-        justify-self: stretch;
-        text-align: right;
-        padding-right: 10px;
+        height: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: ${({ userID }) => (userID !== null ? 'space-between' : 'center')};
+        text-align: left;
+        padding-right: 20px;
+        margin: 0;
+
+        svg {
+          color: ${({ theme }) => theme.sliderHandle};
+          transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+          &:hover {
+            transform: scale(1.25);
+            color: ${({ theme }) => theme.orange};
+          }
+        }
       }
     }
   }
@@ -150,103 +173,74 @@ const NoOffers = styled.div`
 
 const OFFERS_CHUNK = 20;
 
-class List extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hasMore: true,
-    };
-  }
+const List = ({
+  offers,
+  filteredHomeOffers,
+  onMouseEnter,
+  onMouseLeave,
+  userID,
+  handleSettingOffersState,
+}) => {
+  const [hasMore, setHasMore] = useState(true);
 
-  loadItems() {
-    const { filteredHomeOffers, offers, handleSettingOffersState } = this.props;
+  const loadItems = () => {
     const offersArr = filteredHomeOffers.slice(0, offers.length + OFFERS_CHUNK);
 
     if (offers.length >= filteredHomeOffers.length) {
-      this.setState({ hasMore: false });
+      setHasMore(false);
     } else {
       handleSettingOffersState(offersArr);
     }
-  }
+  };
 
-  render() {
-    const { offers, filteredHomeOffers, onMouseEnter, onMouseLeave } = this.props;
-    const { hasMore } = this.state;
-    return (
-      <OffersWrapper id="listWrapper">
-        <StyledInfiniteScroll
-          dataLength={offers.length}
-          next={this.loadItems.bind(this)} // eslint-disable-line react/jsx-no-bind
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          scrollableTarget="listWrapper"
-        >
-          {filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
-            <NoOffers>
-              <span>
-                Brak ofert
-                <span role="img" aria-label="emoji">
-                  😔
-                </span>
+  const addToFavourite = star => {
+    star.target.style.color = '#F28D52';
+  };
+
+  return (
+    <OffersWrapper id="listWrapper" userID={userID}>
+      <StyledInfiniteScroll
+        dataLength={offers.length}
+        next={loadItems.bind(this)} // eslint-disable-line react/jsx-no-bind
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        scrollableTarget="listWrapper"
+      >
+        {filteredHomeOffers.length === 1 && filteredHomeOffers[0] === 0 ? (
+          <NoOffers>
+            <span>
+              Brak ofert
+              <span role="img" aria-label="emoji">
+                😔
               </span>
+            </span>
 
-              <p>
-                Nie udało nam się znaleźć ofert, które odpowiadałyby Twoim oczekiwaniom. Spróbuj
-                zmienić kryteria wyszukiwania.
-              </p>
-            </NoOffers>
-          ) : (
-            filteredHomeOffers.map(scrape => {
-              return (
-                <a
-                  className="offer-container"
-                  href={scrape.link}
-                  id={scrape.id}
-                  key={scrape.id}
-                  onMouseEnter={() => onMouseEnter(scrape.id, scrape.lat, scrape.long)}
-                  onMouseLeave={() => onMouseLeave()}
-                >
-                  <div className="offer">
-                    <div
-                      className="offer__border"
-                      style={{
-                        backgroundColor:
-                          scrape.type === 'Mieszkania » Wynajem' // eslint-disable-line no-nested-ternary
-                            ? MainTheme.orange
-                            : scrape.type === 'Mieszkania » Sprzedaż' // eslint-disable-line no-nested-ternary
-                            ? MainTheme.green
-                            : scrape.type === 'Mieszkania » Zamiana'
-                            ? MainTheme.blue
-                            : MainTheme.orange,
-                      }}
-                    />
-                    <div
-                      className="offer__img"
-                      style={{
-                        background:
-                          scrape.img !== undefined
-                            ? `url(${scrape.img})`
-                            : 'url(https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png)',
-                      }}
-                    />
-                    <div className="offers__desc-container">
-                      <h4 className="offer__title">{scrape.title}</h4>
-                      <div className="offer__desc">
-                        <p className="offer__localization">{scrape.localization}</p>
-                        <p className="offer__type">{scrape.type}</p>
-                        <p className="offer__date">{scrape.date}</p>
-                      </div>
-                    </div>
-                    <p className="offer__price">{scrape.price}</p>
-                  </div>
-                </a>
-              );
-            })
-          )}
-        </StyledInfiniteScroll>
-      </OffersWrapper>
-    );
-  }
-}
+            <p>
+              Nie udało nam się znaleźć ofert, które odpowiadałyby Twoim oczekiwaniom. Spróbuj
+              zmienić kryteria wyszukiwania.
+            </p>
+          </NoOffers>
+        ) : (
+          filteredHomeOffers.map(scrape => {
+            return (
+              <ListItem
+                scrape={scrape}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                userID={userID}
+                addToFavourite={addToFavourite}
+              />
+            );
+          })
+        )}
+      </StyledInfiniteScroll>
+    </OffersWrapper>
+  );
+};
 
-export default List;
+const mapStateToProps = state => {
+  const { userID } = state;
+  return { userID };
+};
+
+export default connect(mapStateToProps)(List);

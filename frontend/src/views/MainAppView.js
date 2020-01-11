@@ -90,28 +90,28 @@ const Loader = styled.span`
   }
 `;
 
-const FilterBarLoading = styled(Loader)`
-  position: relative;
-  height: 17.5vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+// const FilterBarLoading = styled(Loader)`
+//   position: relative;
+//   height: 17.5vh;
+//   width: 100%;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   overflow: hidden;
 
-  .lds-ring {
-    width: 80px;
-    height: 80px;
-  }
-  .lds-ring div {
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border: 8px solid ${({ theme }) => theme.blue};
-    animation: ${ldsRing} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: ${({ theme }) => theme.blue} transparent transparent transparent;
-  }
-`;
+//   .lds-ring {
+//     width: 80px;
+//     height: 80px;
+//   }
+//   .lds-ring div {
+//     width: 64px;
+//     height: 64px;
+//     margin: 8px;
+//     border: 8px solid ${({ theme }) => theme.blue};
+//     animation: ${ldsRing} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+//     border-color: ${({ theme }) => theme.blue} transparent transparent transparent;
+//   }
+// `;
 
 const OFFERS_CHUNK = 20;
 
@@ -170,6 +170,7 @@ class MainAppView extends React.Component {
         min: 0,
         max: Infinity,
       },
+      // Google Map
       mapsApiLoaded: false,
       mapInstance: null,
       mapsapi: null,
@@ -182,22 +183,19 @@ class MainAppView extends React.Component {
     if (state.offers.length === 0) {
       state.offers = props.homeOffers.slice(0, OFFERS_CHUNK);
     }
-    state.homeOffers = props.homeOffers.slice(0, 250);
+    state.homeOffers = props.homeOffers;
 
     return props.homeOffers;
   }
 
   // Call to redux reducer
-  componentDidMount() {
+  async componentDidMount() {
     const { fetchHomeOffers } = this.props;
-    fetchHomeOffers();
-  }
+    await fetchHomeOffers();
 
-  // Initial fill filtered array with whole array
-  componentDidUpdate() {
+    // Initial fill filtered array with whole array
     const { homeOffers, filteredHomeOffers } = this.state;
     if (filteredHomeOffers.length === 0) {
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ filteredHomeOffers: homeOffers });
     }
   }
@@ -328,7 +326,7 @@ class MainAppView extends React.Component {
       // Get distance from current offer to circle center
       if (pinCenter) {
         const distanceFromCenter = mapsapi.geometry.spherical.computeDistanceBetween(
-          { lat: () => offer.lat, lng: () => offer.long },
+          { lat: () => offer.position.lat, lng: () => offer.position.lng },
           pinCenter,
         );
         if (
@@ -385,28 +383,18 @@ class MainAppView extends React.Component {
     return (
       <AppWrapper>
         <Header darkModeEnabled={darkModeEnabled} />
-        {mapsApiLoaded ? (
-          <FilterBar
-            filterByType={this.filterByType}
-            filterByDistance={this.filterByDistance}
-            currentActiveType={currentActiveType}
-            mapsApiLoaded={mapsApiLoaded}
-            mapInstance={mapInstance}
-            mapsapi={mapsapi}
-            priceChange={this.priceChange}
-            handleDurationChange={this.handleDurationChange}
-            setDarkMode={this.setDarkMode}
-          />
-        ) : (
-          <FilterBarLoading>
-            <div className="lds-ring">
-              <div />
-              <div />
-              <div />
-              <div />
-            </div>
-          </FilterBarLoading>
-        )}
+
+        <FilterBar
+          filterByType={this.filterByType}
+          filterByDistance={this.filterByDistance}
+          currentActiveType={currentActiveType}
+          mapsApiLoaded={mapsApiLoaded}
+          mapInstance={mapInstance}
+          mapsapi={mapsapi}
+          priceChange={this.priceChange}
+          handleDurationChange={this.handleDurationChange}
+          setDarkMode={this.setDarkMode}
+        />
         {filteredHomeOffers.length > 0 ? (
           <ListAndMapWrapper>
             <List

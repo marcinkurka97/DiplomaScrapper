@@ -44,6 +44,8 @@ const LoginForm = ({ userID, authenticate }) => (
   >
     {({ handleChange, handleBlur, values }) => {
       if (userID) {
+        localStorage.setItem('isUserLogged', true);
+        localStorage.setItem('userID', JSON.stringify(userID));
         return <Redirect to="/" />;
       }
       return (

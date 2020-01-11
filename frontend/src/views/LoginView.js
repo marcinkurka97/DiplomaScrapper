@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { NavLink } from 'react-router-dom';
 import LoginForm from '../components/organisms/LoginForm/LoginForm';
@@ -99,55 +99,48 @@ const RememberMe = styled.label`
   }
 `;
 
-class LoginView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      checked: false,
-      darkMode: localStorage.getItem('dark') === 'true',
-    };
-  }
+const LoginView = () => {
+  const [checked, setChecked] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('dark') === 'true');
 
-  handleCheckboxChange = event => {
-    this.setState({ checked: event.target.checked });
+  const handleCheckboxChange = event => {
+    setChecked(event.target.checked);
   };
 
-  render() {
-    const { checked, darkMode } = this.state;
-    return (
-      <LoginWrapper>
-        <LoginFormContainer>
-          <StyledLoginForm>
-            <Logo
-              style={{
-                background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
-                width: '100%',
-                height: '17.5vh',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
-                backgroundPosition: 'center center',
-                marginBottom: '12px',
-              }}
-            />
-            <LoginTitle>Logowanie</LoginTitle>
-            <CreateAccounts>
-              Nie masz jeszcze konta?
-              <NavLink to="/register">Załóż je!</NavLink>
-            </CreateAccounts>
-            <LoginForm />
-            <RememberMe>
-              <CheckBox checked={checked} onChange={this.handleCheckboxChange} />
-              <span>Zapamiętaj mnie</span>
-            </RememberMe>
-            <a className="pass-forgot" href="/register">
-              Przypomnij hasło
-            </a>
-          </StyledLoginForm>
-        </LoginFormContainer>
-        <LoginAnimation width="67%" height="100%" />
-      </LoginWrapper>
-    );
-  }
-}
+  return (
+    <LoginWrapper>
+      <LoginFormContainer>
+        <StyledLoginForm>
+          <Logo
+            style={{
+              background: `url(${darkMode ? LogoSVGDark : LogoSVG})`,
+              width: '100%',
+              height: '17.5vh',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+              marginBottom: '12px',
+            }}
+          />
+          <LoginTitle>Logowanie</LoginTitle>
+          <CreateAccounts>
+            Nie masz jeszcze konta?
+            <NavLink to="/register">Załóż je!</NavLink>
+          </CreateAccounts>
+          <LoginForm />
+          <RememberMe>
+            <CheckBox checked={checked} onChange={handleCheckboxChange} />
+            <span>Zapamiętaj mnie</span>
+          </RememberMe>
+          <a className="pass-forgot" href="/register">
+            Przypomnij hasło
+          </a>
+        </StyledLoginForm>
+      </LoginFormContainer>
+      <LoginAnimation width="67%" height="100%" />
+    </LoginWrapper>
+  );
+};
 
 export default LoginView;

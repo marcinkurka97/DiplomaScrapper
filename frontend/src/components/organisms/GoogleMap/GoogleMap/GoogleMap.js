@@ -123,17 +123,19 @@ class GoogleMap extends React.PureComponent {
     const markersData = [];
     // eslint-disable-next-line
     offers.map((offer, index) => {
-      markersData.push({
-        id: index,
-        lat: offer.lat,
-        lng: offer.long,
-        markerId: offer.id,
-        markerImg: offer.img,
-        markerTitle: offer.title,
-        markerPrice: offer.price,
-        markerLink: offer.link,
-        markerType: offer.type,
-      });
+      if (offer !== 0) {
+        markersData.push({
+          id: index,
+          lat: offer.position.lat,
+          lng: offer.position.lng,
+          markerId: offer.id,
+          markerImg: offer.img,
+          markerTitle: offer.title,
+          markerPrice: offer.price,
+          markerLink: offer.link,
+          markerType: offer.type,
+        });
+      }
     });
 
     this.setState({ markers: markersData });
@@ -168,14 +170,13 @@ class GoogleMap extends React.PureComponent {
   };
 
   // On every map change (zoom, dragging) rerender displayed clusters
-  handleMapChange = ({ center, zoom, bounds, styles }) => {
+  handleMapChange = ({ center, zoom, bounds }) => {
     this.setState(
       {
         mapOptions: {
           center,
           zoom,
           bounds,
-          styles,
         },
       },
       () => {
@@ -216,7 +217,7 @@ class GoogleMap extends React.PureComponent {
           yesIWantToUseGoogleMapApiInternals
           onChildClick={this.onMarkerClick}
           bootstrapURLKeys={{
-            key: 'AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE',
+            key: 'AIzaSyAF-_e-JJwREzFyL4GsSBDxoqCxMPptirg',
             libraries: ['places', 'drawing'],
           }}
           onGoogleApiLoaded={({ map, maps }) => this.apiIsLoaded(map, maps)}
