@@ -1,7 +1,7 @@
 const user = require("./UserController");
-const scrapes = require("./ScrapesController");
+const offers = require("./OffersController");
 
 module.exports = {
   user,
-  scrapes
+  offers
 };

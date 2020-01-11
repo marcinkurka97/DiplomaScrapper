@@ -8,10 +8,10 @@ const cors = require("cors");
 const LocalStrategy = require("passport-local").Strategy;
 const routes = require("./routes");
 const User = require("./models/User");
-import { getOffersObj } from "./lib/scrapper";
+require("./lib/scrapper");
 import db from "./lib/db";
 
-const PORT = 9000;
+const PORT = process.env.PORT || 9000;
 
 const app = express();
 app.use(bodyParser.json());

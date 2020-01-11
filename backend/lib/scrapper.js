@@ -4,11 +4,14 @@ import db from "./db";
 import shortid from "shortid";
 import NodeGeocoder from "node-geocoder";
 
+const express = require("express");
+const router = express.Router();
+
 // Options for Google Geocoding
 var options = {
   provider: "google",
   httpAdapter: "https",
-  apiKey: "AIzaSyAnkq6e5TAwYvqYd2ihCJvRt2Lk8rxOFtE",
+  apiKey: "AIzaSyAF-_e-JJwREzFyL4GsSBDxoqCxMPptirg",
   formatter: null
 };
 
@@ -86,7 +89,7 @@ export async function getOlxScrape(url) {
     // Regex which creates next page number from current url
     const nextPageNumber = parseInt(url.match(/page=(\d+)$/)[1], 10) + 1;
     // If we didnt reach last page
-    if (nextPageNumber <= pageLimit) {
+    if (nextPageNumber <= 3) {
       const nextUrl = `https://www.olx.pl/nieruchomosci/mieszkania/katowice/?page=${nextPageNumber}`;
       // Concat new values to offersObj array
       return offersObj.concat(await getOlxScrape(nextUrl));
@@ -146,10 +149,15 @@ export async function runCron(req, res, next) {
      * So when counter reaches 24 (48 Geocoding request)
      * We force loop to wait some time
      */
-    if (counter >= 24) {
+    if (counter >= 48) {
       counter = 0;
       await giveGeocodingSomeTime();
     }
+
+    router.post("/offers/addOffer", function(req, res) {
+      res.send("About this wiki");
+    });
+
     // Push new value to databse
     db.get("olxScrape")
       .push({
@@ -167,34 +175,30 @@ export async function runCron(req, res, next) {
               monthNames[dt.getMonth()]
             }-${dt.getFullYear()}`
           : offersPromise[i].date,
-        lat: await geocoder
+        position: await geocoder
           .geocode(
             offersPromise[i].localization === "Katowice, Śródmieście"
               ? "Katowice, Dworzec"
               : offersPromise[i].localization
           )
           .then(res => {
-            let stringValue = res[0].latitude.toString();
-            const tempToSwap = stringValue.substr(5);
-            const rand = Math.floor(Math.random(parseInt(tempToSwap)) * 10000);
-            stringValue = stringValue.substr(0, 5) + rand;
-            return parseFloat(stringValue);
-          })
-          .catch(function(err) {
-            console.log(err);
-          }),
-        long: await geocoder
-          .geocode(
-            offersPromise[i].localization === "Katowice, Śródmieście"
-              ? "Katowice, Dworzec"
-              : offersPromise[i].localization
-          )
-          .then(res => {
-            let stringValue = res[0].longitude.toString();
-            const tempToSwap = stringValue.substr(5);
-            const rand = Math.floor(Math.random(parseInt(tempToSwap)) * 10000);
-            stringValue = stringValue.substr(0, 5) + rand;
-            return parseFloat(stringValue);
+            let lat = res[0].latitude.toString();
+            let lng = res[0].longitude.toString();
+
+            const latToSwap = lat.substr(5);
+            const lngToSwap = lng.substr(5);
+
+            const randLat = Math.floor(
+              Math.random(parseInt(latToSwap)) * 10000
+            );
+            const randLng = Math.floor(
+              Math.random(parseInt(lngToSwap)) * 10000
+            );
+
+            lat = lat.substr(0, 5) + randLat;
+            lng = lng.substr(0, 5) + randLng;
+
+            return { lat: parseFloat(lat), lng: parseFloat(lng) };
           })
           .catch(function(err) {
             console.log(err);
