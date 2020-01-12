@@ -45,6 +45,19 @@ if (!isDev && cluster.isMaster) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.use(function(req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "POST, GET, PATCH, DELETE, OPTIONS"
+    );
+    next();
+  });
+
   mongoose.connect(
     "mongodb+srv://admin:admin@homepin-mscnm.gcp.mongodb.net/HomePin?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
