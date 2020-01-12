@@ -1,8 +1,10 @@
-// import cron from "node-cron";
-// import { runCron } from "./scrapper";
+// const cron = require("node-cron");
+// const { runCron } = require("./scrapper");
 
 // CRON automate scraping every x time
 // cron.schedule("* * * * *", () => {
 //   console.log("Running the CRON");
 //   runCron();
 // });
+"use strict";
+//# sourceMappingURL=cron.js.map

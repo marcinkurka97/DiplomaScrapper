@@ -1,4 +1,3 @@
-import db from "../lib/db";
 const mongoose = require("mongoose");
 require("../models/Offer");
 
@@ -30,11 +29,12 @@ const offer = {
     });
   },
   getOffers: async (req, res, next) => {
-    // Get the scrape data
-    const olxScrapes = db.get("olxScrape").value();
-
-    // Respond with JSON
-    res.json(olxScrapes);
+    try {
+      var result = await Offer.find().exec();
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
 };
 

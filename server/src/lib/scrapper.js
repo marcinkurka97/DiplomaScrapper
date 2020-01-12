@@ -1,8 +1,7 @@
-import axios from "axios";
-import cheerio from "cheerio";
-import db from "./db";
-import shortid from "shortid";
-import NodeGeocoder from "node-geocoder";
+const axios = require("axios");
+const cheerio = require("cheerio");
+const shortid = require("shortid");
+const NodeGeocoder = require("node-geocoder");
 
 const express = require("express");
 const router = express.Router();
@@ -26,7 +25,7 @@ export async function getOlxScrape(url) {
   const pageLimit = parseInt(pageLimiter.text().replace(/\s\s+/g, ""));
 
   // Get all the values from database
-  const olxScrapes = await db.get("olxScrape").value();
+  // const olxScrapes = await db.get("olxScrape").value();
 
   const dt = new Date();
 
@@ -159,52 +158,52 @@ export async function runCron(req, res, next) {
     });
 
     // Push new value to databse
-    db.get("olxScrape")
-      .push({
-        id: shortid.generate(),
-        title: offersPromise[i].title,
-        link: offersPromise[i].link,
-        img: offersPromise[i].img,
-        price: offersPromise[i].price,
-        type: offersPromise[i].type,
-        localization: offersPromise[i].localization,
-        date: offersPromise[i].date.includes("dzisiaj")
-          ? `${dt.getDate()}-${monthNames[dt.getMonth()]}-${dt.getFullYear()}`
-          : offersPromise[i].date.includes("wczoraj")
-          ? `${dt.getDate() - 1}-${
-              monthNames[dt.getMonth()]
-            }-${dt.getFullYear()}`
-          : offersPromise[i].date,
-        position: await geocoder
-          .geocode(
-            offersPromise[i].localization === "Katowice, Śródmieście"
-              ? "Katowice, Dworzec"
-              : offersPromise[i].localization
-          )
-          .then(res => {
-            let lat = res[0].latitude.toString();
-            let lng = res[0].longitude.toString();
+    // db.get("olxScrape")
+    //   .push({
+    //     id: shortid.generate(),
+    //     title: offersPromise[i].title,
+    //     link: offersPromise[i].link,
+    //     img: offersPromise[i].img,
+    //     price: offersPromise[i].price,
+    //     type: offersPromise[i].type,
+    //     localization: offersPromise[i].localization,
+    //     date: offersPromise[i].date.includes("dzisiaj")
+    //       ? `${dt.getDate()}-${monthNames[dt.getMonth()]}-${dt.getFullYear()}`
+    //       : offersPromise[i].date.includes("wczoraj")
+    //       ? `${dt.getDate() - 1}-${
+    //           monthNames[dt.getMonth()]
+    //         }-${dt.getFullYear()}`
+    //       : offersPromise[i].date,
+    //     position: await geocoder
+    //       .geocode(
+    //         offersPromise[i].localization === "Katowice, Śródmieście"
+    //           ? "Katowice, Dworzec"
+    //           : offersPromise[i].localization
+    //       )
+    //       .then(res => {
+    //         let lat = res[0].latitude.toString();
+    //         let lng = res[0].longitude.toString();
 
-            const latToSwap = lat.substr(5);
-            const lngToSwap = lng.substr(5);
+    //         const latToSwap = lat.substr(5);
+    //         const lngToSwap = lng.substr(5);
 
-            const randLat = Math.floor(
-              Math.random(parseInt(latToSwap)) * 10000
-            );
-            const randLng = Math.floor(
-              Math.random(parseInt(lngToSwap)) * 10000
-            );
+    //         const randLat = Math.floor(
+    //           Math.random(parseInt(latToSwap)) * 10000
+    //         );
+    //         const randLng = Math.floor(
+    //           Math.random(parseInt(lngToSwap)) * 10000
+    //         );
 
-            lat = lat.substr(0, 5) + randLat;
-            lng = lng.substr(0, 5) + randLng;
+    //         lat = lat.substr(0, 5) + randLat;
+    //         lng = lng.substr(0, 5) + randLng;
 
-            return { lat: parseFloat(lat), lng: parseFloat(lng) };
-          })
-          .catch(function(err) {
-            console.log(err);
-          })
-      })
-      .write();
+    //         return { lat: parseFloat(lat), lng: parseFloat(lng) };
+    //       })
+    //       .catch(function(err) {
+    //         console.log(err);
+    //       })
+    //   })
+    //   .write();
     counter++;
   }
 

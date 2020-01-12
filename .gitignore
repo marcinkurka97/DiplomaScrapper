@@ -1,7 +1,12 @@
-node_modules/
-backend/db/*
-!*.gitkeep
+# Node build artifacts
+node_modules
+npm-debug.log
+
+# Local development
+*.env
+*.dev
 .DS_Store
-build/
-.next/
-haters/
+
+# Docker
+Dockerfile
+docker-compose.yml
