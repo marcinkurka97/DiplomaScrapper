@@ -283,8 +283,8 @@ class MainAppView extends React.Component {
 
     const filteredOffers = homeOffers.filter(offer => {
       // Parse string price to int value
-      const splited = offer.price.split(' ');
-      const intPrice = parseInt(splited.join(''), 10);
+      const splitedPrice = offer.price.split(' ');
+      const intPrice = parseInt(splitedPrice.join(''), 10);
 
       const dateArr = offer.date.split('-');
 

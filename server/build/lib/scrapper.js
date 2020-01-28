@@ -13,10 +13,6 @@ var _regenerator = require("babel-runtime/regenerator");
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _toConsumableArray2 = require("babel-runtime/helpers/toConsumableArray");
-
-var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
-
 var _from = require("babel-runtime/core-js/array/from");
 
 var _from2 = _interopRequireDefault(_from);
@@ -28,7 +24,7 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 // Scraping function
 var getOlxScrape = exports.getOlxScrape = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(url) {
-    var _ref2, html, $, offers, pageLimiter, pageLimit, olxScrapes, dt, offersObj, nextPageNumber, nextUrl;
+    var _ref2, html, $, offers, pageLimiter, pageLimit, dt, offersFromMongoDB, lastScrapedOfferLink, arrayFromScrapes, offersObj, i, currentLink, nextPageNumber, nextUrl;
 
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
@@ -47,85 +43,103 @@ var getOlxScrape = exports.getOlxScrape = function () {
 
             pageLimiter = $("[data-cy='page-link-last']");
             pageLimit = parseInt(pageLimiter.text().replace(/\s\s+/g, ""));
-
-            // Get all the values from database
-
-            _context.next = 10;
-            return db.get("olxScrape").value();
-
-          case 10:
-            olxScrapes = _context.sent;
             dt = new Date();
+            offersFromMongoDB = void 0;
+            _context.prev = 10;
+            _context.next = 13;
+            return Offer.find().sort({ scrapeDate: -1 }).exec();
+
+          case 13:
+            offersFromMongoDB = _context.sent;
+            _context.next = 19;
+            break;
+
+          case 16:
+            _context.prev = 16;
+            _context.t0 = _context["catch"](10);
+
+            console.log(_context.t0);
+
+          case 19:
+            lastScrapedOfferLink = offersFromMongoDB.length !== 0 ? offersFromMongoDB[offersFromMongoDB.length - 1].link : "";
 
             // Add only new offers to offersObj Array
 
-            offersObj = (0, _from2.default)(offers).reduce(function (acc, el) {
-              // Get current element link value
-              var currentLink = $(el).find('[data-cy="listing-ad-title"]').attr("href");
+            arrayFromScrapes = (0, _from2.default)(offers);
+            offersObj = [];
+            i = 0;
 
-              /**
-               * Check if this link is already present in databse,
-               * if it is not, then we can add this value,
-               * otherwise skip it
-               */
-              //
-              if (!olxScrapes.find(function (item) {
-                return item.link === currentLink;
-              })) {
-                return [].concat((0, _toConsumableArray3.default)(acc), [
-                // Scraping specific fields and formatting it
-                {
-                  title: $(el).find('[data-cy="listing-ad-title"]').text().replace(/\s\s+/g, ""),
-                  link: $(el).find('[data-cy="listing-ad-title"]').attr("href"),
-                  img: $(el).find("img").attr("src"),
-                  price: $(el).find(".td-price strong").text(),
-                  type: $(el).find(".title-cell p small").text().replace(/\s\s+/g, ""),
-                  localization: $(el).find("[data-icon='location-filled']").parent().text().replace(/\s\s+/g, ""),
-                  date: $(el).find("[data-icon='clock']").parent().text().replace(/^\s+|\s+$/g, "").replace("  ", "-") + "-" + dt.getFullYear()
-                }]);
-              }
-              return acc;
-            }, []);
+          case 23:
+            if (!(i < arrayFromScrapes.length)) {
+              _context.next = 33;
+              break;
+            }
 
-            // Recursive iteration through all pages the get all the data
+            currentLink = $(arrayFromScrapes[i]).find('[data-cy="listing-ad-title"]').attr("href");
 
+            if (!(currentLink !== lastScrapedOfferLink)) {
+              _context.next = 29;
+              break;
+            }
+
+            offersObj.push({
+              title: $(arrayFromScrapes[i]).find('[data-cy="listing-ad-title"]').text().replace(/\s\s+/g, ""),
+              link: $(arrayFromScrapes[i]).find('[data-cy="listing-ad-title"]').attr("href"),
+              img: $(arrayFromScrapes[i]).find("img").attr("src"),
+              price: $(arrayFromScrapes[i]).find(".td-price strong").text(),
+              type: $(arrayFromScrapes[i]).find(".title-cell p small").text().replace(/\s\s+/g, ""),
+              localization: $(arrayFromScrapes[i]).find("[data-icon='location-filled']").parent().text().replace(/\s\s+/g, ""),
+              date: $(arrayFromScrapes[i]).find("[data-icon='clock']").parent().text().replace(/^\s+|\s+$/g, "").replace("  ", "-") + "-" + dt.getFullYear()
+            });
+            _context.next = 30;
+            break;
+
+          case 29:
+            return _context.abrupt("break", 33);
+
+          case 30:
+            i++;
+            _context.next = 23;
+            break;
+
+          case 33:
             if (!(offersObj.length < 1)) {
-              _context.next = 17;
+              _context.next = 37;
               break;
             }
 
             return _context.abrupt("return", offersObj);
 
-          case 17:
+          case 37:
             // Regex which creates next page number from current url
             nextPageNumber = parseInt(url.match(/page=(\d+)$/)[1], 10) + 1;
             // If we didnt reach last page
 
-            if (!(nextPageNumber <= 3)) {
-              _context.next = 27;
+            if (!(nextPageNumber <= 10)) {
+              _context.next = 47;
               break;
             }
 
             nextUrl = "https://www.olx.pl/nieruchomosci/mieszkania/katowice/?page=" + nextPageNumber;
             // Concat new values to offersObj array
 
-            _context.t0 = offersObj;
-            _context.next = 23;
+            _context.t1 = offersObj;
+            _context.next = 43;
             return getOlxScrape(nextUrl);
 
-          case 23:
-            _context.t1 = _context.sent;
-            return _context.abrupt("return", _context.t0.concat.call(_context.t0, _context.t1));
+          case 43:
+            _context.t2 = _context.sent;
+            return _context.abrupt("return", _context.t1.concat.call(_context.t1, _context.t2));
 
-          case 27:
+          case 47:
             return _context.abrupt("return", offersObj);
 
-          case 28:
+          case 48:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this);
+    }, _callee, this, [[10, 16]]);
   }));
 
   return function getOlxScrape(_x) {
@@ -192,7 +206,7 @@ var getOffersObj = exports.getOffersObj = function () {
 
 var runCron = exports.runCron = function () {
   var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res, next) {
-    var offersPromise, dt, monthNames, geocoder, counter, i;
+    var offersPromise, dt, monthNames, geocoder, counter, offersToAddToMongoDB, i;
     return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -211,34 +225,29 @@ var runCron = exports.runCron = function () {
           case 8:
             geocoder = _context4.sent;
             counter = 0;
+            offersToAddToMongoDB = [];
 
             // Iterate though all the scraped data array
 
             i = 0;
 
-          case 11:
+          case 12:
             if (!(i < offersPromise.length)) {
-              _context4.next = 35;
+              _context4.next = 36;
               break;
             }
 
             if (!(counter >= 48)) {
-              _context4.next = 16;
+              _context4.next = 17;
               break;
             }
 
             counter = 0;
-            _context4.next = 16;
+            _context4.next = 17;
             return giveGeocodingSomeTime();
 
-          case 16:
-
-            router.post("/offers/addOffer", function (req, res) {
-              res.send("About this wiki");
-            });
-
-            // Push new value to databse
-            _context4.t0 = db.get("olxScrape");
+          case 17:
+            _context4.t0 = offersToAddToMongoDB;
             _context4.t1 = shortid.generate();
             _context4.t2 = offersPromise[i].title;
             _context4.t3 = offersPromise[i].link;
@@ -246,8 +255,9 @@ var runCron = exports.runCron = function () {
             _context4.t5 = offersPromise[i].price;
             _context4.t6 = offersPromise[i].type;
             _context4.t7 = offersPromise[i].localization;
-            _context4.t8 = offersPromise[i].date.includes("dzisiaj") ? dt.getDate() + "-" + monthNames[dt.getMonth()] + "-" + dt.getFullYear() : offersPromise[i].date.includes("wczoraj") ? dt.getDate() - 1 + "-" + monthNames[dt.getMonth()] + "-" + dt.getFullYear() : offersPromise[i].date;
-            _context4.next = 28;
+            _context4.t8 = new Date();
+            _context4.t9 = offersPromise[i].date.includes("dzisiaj") ? dt.getDate() + "-" + monthNames[dt.getMonth()] + "-" + dt.getFullYear() : offersPromise[i].date.includes("wczoraj") ? dt.getDate() - 1 + "-" + monthNames[dt.getMonth()] + "-" + dt.getFullYear() : offersPromise[i].date;
+            _context4.next = 29;
             return geocoder.geocode(offersPromise[i].localization === "Katowice, Śródmieście" ? "Katowice, Dworzec" : offersPromise[i].localization).then(function (res) {
               var lat = res[0].latitude.toString();
               var lng = res[0].longitude.toString();
@@ -266,9 +276,9 @@ var runCron = exports.runCron = function () {
               console.log(err);
             });
 
-          case 28:
-            _context4.t9 = _context4.sent;
-            _context4.t10 = {
+          case 29:
+            _context4.t10 = _context4.sent;
+            _context4.t11 = {
               id: _context4.t1,
               title: _context4.t2,
               link: _context4.t3,
@@ -276,24 +286,35 @@ var runCron = exports.runCron = function () {
               price: _context4.t5,
               type: _context4.t6,
               localization: _context4.t7,
-              date: _context4.t8,
-              position: _context4.t9
+              scrapeDate: _context4.t8,
+              date: _context4.t9,
+              position: _context4.t10
             };
 
-            _context4.t0.push.call(_context4.t0, _context4.t10).write();
+            _context4.t0.push.call(_context4.t0, _context4.t11);
 
             counter++;
 
-          case 32:
+          case 33:
             i++;
-            _context4.next = 11;
+            _context4.next = 12;
             break;
 
-          case 35:
+          case 36:
+
+            if (offersToAddToMongoDB.length !== 0) {
+              Offer.collection.insertMany(offersToAddToMongoDB, function (err, docs) {
+                if (err) {
+                  return console.error(err);
+                } else {
+                  console.log("Multiple documents inserted to Collection");
+                }
+              });
+            }
 
             console.log("DONE!");
 
-          case 36:
+          case 38:
           case "end":
             return _context4.stop();
         }
@@ -313,12 +334,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var axios = require("axios");
 var cheerio = require("cheerio");
-var db = require("./db");
 var shortid = require("shortid");
 var NodeGeocoder = require("node-geocoder");
-
 var express = require("express");
 var router = express.Router();
+
+var mongoose = require("mongoose");
+require("../models/Offer");
+
+var Offer = mongoose.model("Offers");
 
 // Options for Google Geocoding
 var options = {

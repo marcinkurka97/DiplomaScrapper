@@ -20,7 +20,7 @@ export const authenticate = (username, password) => dispatch => {
   dispatch({ type: AUTH_REQUEST });
 
   return axios
-    .post('https://housepin.herokuapp.com/api/user/login', {
+    .post('http://localhost:5000/api/user/login', {
       username,
       password,
     })
@@ -37,7 +37,7 @@ export const register = (username, email, password) => dispatch => {
   dispatch({ type: REG_REQUEST });
 
   return axios
-    .post('https://housepin.herokuapp.com/api/user/register', {
+    .post('http://localhost:5000/api/user/register', {
       username,
       email,
       password,
@@ -55,7 +55,7 @@ export const logout = () => dispatch => {
   dispatch({ type: LOGOUT_REQUEST });
 
   return axios
-    .post('https://housepin.herokuapp.com/api/user/logout')
+    .post('http://localhost:5000/api/user/logout')
     .then(payload => {
       console.log(payload);
       dispatch({ type: LOGOUT_SUCCESS, payload });
@@ -70,7 +70,7 @@ export const fetchItems = () => dispatch => {
   dispatch({ type: FETCH_REQUEST });
 
   return axios
-    .get('https://housepin.herokuapp.com/api/offers/getOffers')
+    .get('http://localhost:5000/api/offers/getOffers')
     .then(({ data }) => {
       dispatch({
         type: FETCH_SUCCESS,

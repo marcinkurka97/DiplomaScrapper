@@ -224,6 +224,7 @@ const List = ({
           filteredHomeOffers.map(scrape => {
             return (
               <ListItem
+                key={scrape.id}
                 scrape={scrape}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}

@@ -30,7 +30,9 @@ const offer = {
   },
   getOffers: async (req, res, next) => {
     try {
-      var result = await Offer.find().exec();
+      const result = await Offer.find()
+        .sort({ date: -1 })
+        .exec();
       res.send(result);
     } catch (error) {
       res.status(500).send(error);

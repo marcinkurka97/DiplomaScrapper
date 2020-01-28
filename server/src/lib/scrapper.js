@@ -2,9 +2,13 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const shortid = require("shortid");
 const NodeGeocoder = require("node-geocoder");
-
 const express = require("express");
 const router = express.Router();
+
+const mongoose = require("mongoose");
+require("../models/Offer");
+
+const Offer = mongoose.model("Offers");
 
 // Options for Google Geocoding
 var options = {
@@ -24,62 +28,67 @@ export async function getOlxScrape(url) {
   const pageLimiter = $("[data-cy='page-link-last']");
   const pageLimit = parseInt(pageLimiter.text().replace(/\s\s+/g, ""));
 
-  // Get all the values from database
-  // const olxScrapes = await db.get("olxScrape").value();
-
   const dt = new Date();
 
+  let offersFromMongoDB;
+
+  try {
+    offersFromMongoDB = await Offer.find()
+      .sort({ scrapeDate: -1 })
+      .exec();
+  } catch (error) {
+    console.log(error);
+  }
+
+  const lastScrapedOfferLink =
+    offersFromMongoDB.length !== 0
+      ? offersFromMongoDB[offersFromMongoDB.length - 1].link
+      : "";
+
   // Add only new offers to offersObj Array
-  const offersObj = Array.from(offers).reduce((acc, el) => {
-    // Get current element link value
-    const currentLink = $(el)
+  const arrayFromScrapes = Array.from(offers);
+  const offersObj = [];
+
+  for (let i = 0; i < arrayFromScrapes.length; i++) {
+    const currentLink = $(arrayFromScrapes[i])
       .find('[data-cy="listing-ad-title"]')
       .attr("href");
 
-    /**
-     * Check if this link is already present in databse,
-     * if it is not, then we can add this value,
-     * otherwise skip it
-     */
-    //
-    if (!olxScrapes.find(item => item.link === currentLink)) {
-      return [
-        ...acc,
-        // Scraping specific fields and formatting it
-        {
-          title: $(el)
-            .find('[data-cy="listing-ad-title"]')
-            .text()
-            .replace(/\s\s+/g, ""),
-          link: $(el)
-            .find('[data-cy="listing-ad-title"]')
-            .attr("href"),
-          img: $(el)
-            .find("img")
-            .attr("src"),
-          price: $(el)
-            .find(".td-price strong")
-            .text(),
-          type: $(el)
-            .find(".title-cell p small")
-            .text()
-            .replace(/\s\s+/g, ""),
-          localization: $(el)
-            .find("[data-icon='location-filled']")
-            .parent()
-            .text()
-            .replace(/\s\s+/g, ""),
-          date: `${$(el)
-            .find("[data-icon='clock']")
-            .parent()
-            .text()
-            .replace(/^\s+|\s+$/g, "")
-            .replace("  ", "-")}-${dt.getFullYear()}`
-        }
-      ];
+    if (currentLink !== lastScrapedOfferLink) {
+      offersObj.push({
+        title: $(arrayFromScrapes[i])
+          .find('[data-cy="listing-ad-title"]')
+          .text()
+          .replace(/\s\s+/g, ""),
+        link: $(arrayFromScrapes[i])
+          .find('[data-cy="listing-ad-title"]')
+          .attr("href"),
+        img: $(arrayFromScrapes[i])
+          .find("img")
+          .attr("src"),
+        price: $(arrayFromScrapes[i])
+          .find(".td-price strong")
+          .text(),
+        type: $(arrayFromScrapes[i])
+          .find(".title-cell p small")
+          .text()
+          .replace(/\s\s+/g, ""),
+        localization: $(arrayFromScrapes[i])
+          .find("[data-icon='location-filled']")
+          .parent()
+          .text()
+          .replace(/\s\s+/g, ""),
+        date: `${$(arrayFromScrapes[i])
+          .find("[data-icon='clock']")
+          .parent()
+          .text()
+          .replace(/^\s+|\s+$/g, "")
+          .replace("  ", "-")}-${dt.getFullYear()}`
+      });
+    } else {
+      break;
     }
-    return acc;
-  }, []);
+  }
 
   // Recursive iteration through all pages the get all the data
   if (offersObj.length < 1) {
@@ -88,7 +97,7 @@ export async function getOlxScrape(url) {
     // Regex which creates next page number from current url
     const nextPageNumber = parseInt(url.match(/page=(\d+)$/)[1], 10) + 1;
     // If we didnt reach last page
-    if (nextPageNumber <= 3) {
+    if (nextPageNumber <= 10) {
       const nextUrl = `https://www.olx.pl/nieruchomosci/mieszkania/katowice/?page=${nextPageNumber}`;
       // Concat new values to offersObj array
       return offersObj.concat(await getOlxScrape(nextUrl));
@@ -140,6 +149,8 @@ export async function runCron(req, res, next) {
   const geocoder = await NodeGeocoder(options);
   let counter = 0;
 
+  const offersToAddToMongoDB = [];
+
   // Iterate though all the scraped data array
   for (let i = 0; i < offersPromise.length; i++) {
     /**
@@ -153,58 +164,58 @@ export async function runCron(req, res, next) {
       await giveGeocodingSomeTime();
     }
 
-    router.post("/offers/addOffer", function(req, res) {
-      res.send("About this wiki");
+    // Push new value to databse
+    offersToAddToMongoDB.push({
+      id: shortid.generate(),
+      title: offersPromise[i].title,
+      link: offersPromise[i].link,
+      img: offersPromise[i].img,
+      price: offersPromise[i].price,
+      type: offersPromise[i].type,
+      localization: offersPromise[i].localization,
+      scrapeDate: new Date(),
+      date: offersPromise[i].date.includes("dzisiaj")
+        ? `${dt.getDate()}-${monthNames[dt.getMonth()]}-${dt.getFullYear()}`
+        : offersPromise[i].date.includes("wczoraj")
+        ? `${dt.getDate() - 1}-${monthNames[dt.getMonth()]}-${dt.getFullYear()}`
+        : offersPromise[i].date,
+      position: await geocoder
+        .geocode(
+          offersPromise[i].localization === "Katowice, Śródmieście"
+            ? "Katowice, Dworzec"
+            : offersPromise[i].localization
+        )
+        .then(res => {
+          let lat = res[0].latitude.toString();
+          let lng = res[0].longitude.toString();
+
+          const latToSwap = lat.substr(5);
+          const lngToSwap = lng.substr(5);
+
+          const randLat = Math.floor(Math.random(parseInt(latToSwap)) * 10000);
+          const randLng = Math.floor(Math.random(parseInt(lngToSwap)) * 10000);
+
+          lat = lat.substr(0, 5) + randLat;
+          lng = lng.substr(0, 5) + randLng;
+
+          return { lat: parseFloat(lat), lng: parseFloat(lng) };
+        })
+        .catch(function(err) {
+          console.log(err);
+        })
     });
 
-    // Push new value to databse
-    // db.get("olxScrape")
-    //   .push({
-    //     id: shortid.generate(),
-    //     title: offersPromise[i].title,
-    //     link: offersPromise[i].link,
-    //     img: offersPromise[i].img,
-    //     price: offersPromise[i].price,
-    //     type: offersPromise[i].type,
-    //     localization: offersPromise[i].localization,
-    //     date: offersPromise[i].date.includes("dzisiaj")
-    //       ? `${dt.getDate()}-${monthNames[dt.getMonth()]}-${dt.getFullYear()}`
-    //       : offersPromise[i].date.includes("wczoraj")
-    //       ? `${dt.getDate() - 1}-${
-    //           monthNames[dt.getMonth()]
-    //         }-${dt.getFullYear()}`
-    //       : offersPromise[i].date,
-    //     position: await geocoder
-    //       .geocode(
-    //         offersPromise[i].localization === "Katowice, Śródmieście"
-    //           ? "Katowice, Dworzec"
-    //           : offersPromise[i].localization
-    //       )
-    //       .then(res => {
-    //         let lat = res[0].latitude.toString();
-    //         let lng = res[0].longitude.toString();
-
-    //         const latToSwap = lat.substr(5);
-    //         const lngToSwap = lng.substr(5);
-
-    //         const randLat = Math.floor(
-    //           Math.random(parseInt(latToSwap)) * 10000
-    //         );
-    //         const randLng = Math.floor(
-    //           Math.random(parseInt(lngToSwap)) * 10000
-    //         );
-
-    //         lat = lat.substr(0, 5) + randLat;
-    //         lng = lng.substr(0, 5) + randLng;
-
-    //         return { lat: parseFloat(lat), lng: parseFloat(lng) };
-    //       })
-    //       .catch(function(err) {
-    //         console.log(err);
-    //       })
-    //   })
-    //   .write();
     counter++;
+  }
+
+  if (offersToAddToMongoDB.length !== 0) {
+    Offer.collection.insertMany(offersToAddToMongoDB, function(err, docs) {
+      if (err) {
+        return console.error(err);
+      } else {
+        console.log("Multiple documents inserted to Collection");
+      }
+    });
   }
 
   console.log("DONE!");

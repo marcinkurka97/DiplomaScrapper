@@ -11,7 +11,6 @@ var morgan = require("morgan");
 var LocalStrategy = require("passport-local").Strategy;
 var routes = require("./routes");
 var User = require("./models/User");
-var db = require("./lib/db");
 require("./lib/scrapper");
 require("babel-core/register");
 require("babel-polyfill");
@@ -46,26 +45,23 @@ if (!isDev && cluster.isMaster) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, OPTIONS");
+    next();
+  });
+
   mongoose.connect("mongodb+srv://admin:admin@homepin-mscnm.gcp.mongodb.net/HomePin?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
 
-  // Answer API requests.
-  app.get("/api/offers/getOffers", function (req, res) {
-    res.set("Content-Type", "application/json");
-
-    // Get the scrape data
-    var olxScrapes = db.get("olxScrape").value();
-
-    // Respond with JSON
-    res.json(olxScrapes);
-  });
-
-  // All remaining requests return the React app, so it can handle routing.
-  app.get("*", function (request, response) {
-    response.sendFile(path.resolve(__dirname, "../../react-ui/build", "index.html"));
-  });
-
-  app.listen(PORT, function () {
-    console.error("Node " + (isDev ? "dev server" : "cluster worker " + process.pid) + ": listening on port " + PORT);
+  var conn = mongoose.connection;
+  conn.on("error", console.error.bind(console, "connection error:"));
+  conn.once("open", function () {
+    console.log("Connected to mlab database!");
+    app.listen(PORT, function () {
+      return console.log("App is listening on port " + PORT + "!");
+    });
+    app.use("/api", routes);
   });
 }
 //# sourceMappingURL=index.js.map
