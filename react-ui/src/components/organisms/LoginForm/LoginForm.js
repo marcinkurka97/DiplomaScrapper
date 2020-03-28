@@ -1,39 +1,9 @@
 import React from 'react';
-import styled from '@emotion/styled';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authenticate as authenticateAction } from '../../../actions';
-import Input from '../../atoms/Input/Input';
-import Button from '../../atoms/Button/Button';
-
-const StyledForm = styled(Form)`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const StyledInput = styled(Input)`
-  box-shadow: 0;
-  border-radius: 0;
-  border: 1px solid rgba(36, 28, 21, 0.3);
-  background-color: #fff;
-  color: ${({ theme }) => theme.black};
-  padding: 0 15px;
-  height: 52px;
-  width: 100%;
-  margin: 0 0 24px 0;
-`;
-
-const StyledButton = styled(Button)`
-  border-radius: 0;
-  background-color: ${({ theme }) => theme.blue};
-  height: 52px;
-  width: 100%;
-  font-size: 20px;
-  font-weight: 600;
-  margin: 20px 0 0 0;
-`;
+import { StyledForm, StyledInput, StyledButton } from './LoginForm.style';
 
 const LoginForm = ({ userID, authenticate }) => (
   <Formik

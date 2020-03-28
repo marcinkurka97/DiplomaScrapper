@@ -49,7 +49,7 @@ var offer = {
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return Offer.find().sort({ scrapeDate: -1 }).exec();
+              return Offer.find().sort({ date: -1 }).exec();
 
             case 3:
               result = _context.sent;

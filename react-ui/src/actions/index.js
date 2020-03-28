@@ -57,7 +57,6 @@ export const logout = () => dispatch => {
   return axios
     .post('https://housepin.herokuapp.com/api/user/logout')
     .then(payload => {
-      console.log(payload);
       dispatch({ type: LOGOUT_SUCCESS, payload });
     })
     .catch(err => {
