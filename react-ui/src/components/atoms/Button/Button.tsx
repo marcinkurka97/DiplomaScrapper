@@ -4,14 +4,27 @@ const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.body};
+  color: ${({ theme }: { theme: { body: string } }) => theme.body};
   text-decoration: none;
   padding: 0 25px;
-  background-color: ${({ theme, color }) => color || theme.backgroundDarkGray};
+  background-color: ${({
+    theme,
+    color,
+  }: {
+    theme: { body: string; backgroundDarkGray: string };
+    color?: string;
+  }) => color || theme.backgroundDarkGray};
   height: 40px;
   border: none;
   border-radius: 20px;
-  font-weight: ${({ theme, bold }) => (bold ? theme.boldFont : theme.normalFont)};
+  font-weight: ${({
+    theme,
+    bold,
+  }: {
+    theme: { body: string; backgroundDarkGray: string; boldFont: number; normalFont: number };
+    color?: string;
+    bold?: boolean;
+  }) => (bold ? theme.boldFont : theme.normalFont)};
   letter-spacing: 1px;
   font-size: 14px;
   cursor: pointer;

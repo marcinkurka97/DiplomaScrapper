@@ -1,6 +1,6 @@
 import React from 'react';
 import Lottie from 'react-lottie';
-import PropTypes from 'prop-types';
+import { LoginAnimationProps } from './LoginAnimation.types';
 
 // #region Animation Data
 const animationData = {
@@ -1399,18 +1399,8 @@ const defaultOptions = {
   },
 };
 
-const LoginAnimation = ({ width, height }) => (
+const LoginAnimation: React.FC<LoginAnimationProps> = ({ width, height }) => (
   <Lottie options={defaultOptions} height={height} width={width} />
 );
-
-LoginAnimation.propTypes = {
-  width: PropTypes.string,
-  height: PropTypes.string,
-};
-
-LoginAnimation.defaultProps = {
-  width: 500,
-  height: 500,
-};
 
 export default LoginAnimation;

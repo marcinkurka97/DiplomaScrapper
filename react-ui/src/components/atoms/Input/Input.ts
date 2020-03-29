@@ -6,9 +6,13 @@ const Input = styled.input`
   padding: 15px 30px;
   height: 35px;
   font-size: '2.1rem';
-  font-weight: ${({ theme }) => theme.normalFont};
-  color: ${({ theme }) => theme.body};
-  background-color: ${({ theme }) => theme.backgroundDarkGray};
+  font-weight: ${({ theme }: { theme: { normalFont: number } }) => theme.normalFont};
+  color: ${({ theme }: { theme: { normalFont: number; body: string } }) => theme.body};
+  background-color: ${({
+    theme,
+  }: {
+    theme: { normalFont: number; body: string; backgroundDarkGray: string };
+  }) => theme.backgroundDarkGray};
   border: none;
   border-radius: 20px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
@@ -19,7 +23,12 @@ const Input = styled.input`
     color: ${({ theme }) => theme.body};
   }
 
-  ${({ search }) =>
+  ${({
+    search,
+  }: {
+    theme: { normalFont: number; body: string; backgroundDarkGray: string };
+    search?: boolean;
+  }) =>
     search &&
     css({
       padding: '10px 20px 10px 40px',

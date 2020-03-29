@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { theme as MainTheme } from '../../../theme/mainTheme';
 import { RangeContainer, StyledRange } from './RangeSlider.style';
+import { RangeSliderProps } from './RangeSlider.types';
 
-const RangeSlider = ({ rangeValue, changeHandler }) => {
+const RangeSlider: React.FC<RangeSliderProps> = ({ rangeValue, changeHandler }) => {
   const rangeRef = useRef(null);
 
   return (
@@ -15,7 +16,7 @@ const RangeSlider = ({ rangeValue, changeHandler }) => {
         onChange={changeHandler}
         step={0.1}
         allowCross={false}
-        tipFormatter={value => `${value}k zł`}
+        tipFormatter={(value: number) => `${value}k zł`}
         defaultValue={[0, 1.5]}
         marks={{ 0: '0 zł', 2.5: '2 000 zł', 5: '5 000 zł', 10: '10 000 zł' }}
         trackStyle={[

@@ -1,9 +1,9 @@
-import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import styled from '@emotion/styled';
+import { createSliderWithTooltip } from 'rc-slider';
+import { Range } from 'rc-slider';
 
-const { createSliderWithTooltip } = Slider;
-const Range = createSliderWithTooltip(Slider.Range);
+const RangeSlider = createSliderWithTooltip(Range);
 
 export const RangeContainer = styled.div`
   margin-left: 5%;
@@ -12,7 +12,7 @@ export const RangeContainer = styled.div`
   align-items: center;
 `;
 
-export const StyledRange = styled(Range)`
+export const StyledRange = styled(RangeSlider)`
   margin: 0 20px;
   width: 85%;
   display: flex;
@@ -20,7 +20,8 @@ export const StyledRange = styled(Range)`
 
   .rc-slider-rail {
     height: 10px;
-    background: ${({ theme }) => theme.backgroundDarkGray} !important;
+    background: ${({ theme }: { theme: { backgroundDarkGray: string } }) =>
+      theme.backgroundDarkGray} !important;
     transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
@@ -36,7 +37,7 @@ export const StyledRange = styled(Range)`
     .rc-slider-mark-text {
       width: 70px;
       transition: font-size 0.1s ease-in;
-      color: ${({ theme }) => theme.body};
+      color: ${({ theme }: { theme: { backgroundDarkGray: string; body: string } }) => theme.body};
     }
 
     .rc-slider-mark-text-active {

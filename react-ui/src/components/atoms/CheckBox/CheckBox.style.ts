@@ -23,7 +23,7 @@ export const StyledCheckbox = styled.div`
   display: inline-block;
   width: 24px;
   height: 24px;
-  background: ${props => (props.checked ? `${theme.blue}` : '#fff')};
+  background: ${({ checked }: { checked: boolean }) => (checked ? `${theme.blue}` : '#fff')};
   border: 1px solid rgba(36, 28, 21, 0.3);
   transition: all 150ms;
 
@@ -32,7 +32,7 @@ export const StyledCheckbox = styled.div`
   }
 
   ${Icon} {
-    visibility: ${props => (props.checked ? 'visible' : 'hidden')};
+    visibility: ${({ checked }: { checked: boolean }) => (checked ? 'visible' : 'hidden')};
   }
 `;
 
