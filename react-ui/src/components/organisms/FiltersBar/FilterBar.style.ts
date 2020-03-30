@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import Button from '../../atoms/Button/Button';
 import Input from '../../atoms/Input/Input';
+import { StyledButtonProps } from './FilterBar.types';
 
 export const FilterBarWrapper = styled.div`
   position: relative;
   height: 17.5vh;
-  background: ${({ theme }) => theme.backgroundGray};
+  background: ${({ theme }: { theme: { backgroundGray: string } }) => theme.backgroundGray};
   transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
@@ -28,7 +29,7 @@ export const TypeButtons = styled.div`
 export const StyledButton = styled(Button)`
   margin: 0 15px 0 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 1px 5px 0 rgba(0, 0, 0, 0.14);
-  background: ${({ theme, active, rent, sell, swap }) =>
+  background: ${({ theme, active, rent, sell, swap }: StyledButtonProps) =>
     active && rent // eslint-disable-line no-nested-ternary
       ? theme.orange
       : active && sell // eslint-disable-line no-nested-ternary

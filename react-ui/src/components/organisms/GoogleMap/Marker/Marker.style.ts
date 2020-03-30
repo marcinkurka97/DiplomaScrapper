@@ -47,8 +47,16 @@ export const MarkerStyled = styled.div`
     transform: scale(1.2);
   }
 
-  ${props =>
-    props.hoverState && props.hoverIdState === props.markerId
+  ${({
+    hoverState,
+    hoverIdState,
+    markerId,
+  }: {
+    hoverState: boolean;
+    hoverIdState: string;
+    markerId: string;
+  }) =>
+    hoverState && hoverIdState === markerId
       ? css`
           position: relative;
           transform: scale(1.5);
@@ -115,7 +123,7 @@ export const MarkerInfoWindowWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: ${({ theme }) => theme.black};
+    color: ${({ theme }: { theme: { black: string } }) => theme.black};
 
     .marker-window__right__title {
       font-size: 14px;
@@ -131,7 +139,7 @@ export const MarkerInfoWindowWrapper = styled.div`
       width: auto;
       font-size: 14px;
       font-weight: 500;
-      color: ${({ theme }) => theme.blue} !important;
+      color: ${({ theme }: { theme: { black: string; blue: string } }) => theme.blue} !important;
 
       &:hover {
         color: #6d6d6d;

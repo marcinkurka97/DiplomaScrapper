@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import HomeIcon from '../../../../assets/HomeIcon';
 import { MarkerInGroupStyled, MarkerStyled, MarkerInfoWindowWrapper } from './Marker.style';
+import { MarkerProps } from './Marker.types';
 
-const Marker = ({
+const Marker: React.FC<MarkerProps> = ({
   inGroup,
   colorType,
   hoverIdState,
@@ -49,14 +49,6 @@ const Marker = ({
       )}
     </div>
   );
-};
-
-Marker.defaultProps = {
-  inGroup: false,
-};
-
-Marker.propTypes = {
-  inGroup: PropTypes.bool,
 };
 
 export default Marker;

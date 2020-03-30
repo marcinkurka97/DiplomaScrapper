@@ -19,7 +19,6 @@ export const MarkerCounter = styled.div`
   background-color: #fff;
   left: -10%;
   z-index: -1;
-
   &:before {
     box-sizing: initial;
     content: '';
@@ -57,9 +56,8 @@ export const MarkerGroup = styled.div`
   display: flex;
   align-items: center;
   width: 70px;
-
-  ${props =>
-    props.hoverState && props.points.some(obj => obj.markerId === props.hoverIdState)
+  ${({ hoverState, points, hoverIdState }: { hoverState: any; points: any; hoverIdState: any }) =>
+    hoverState && points.some((obj: any) => obj.markerId === hoverIdState)
       ? css`
           position: relative;
           transform: scale(1.5);

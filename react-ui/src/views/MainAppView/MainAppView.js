@@ -8,6 +8,8 @@ import List from '../../components/organisms/ListView/List';
 import { fetchItems } from '../../actions';
 import { AppWrapper, ListAndMapWrapper, Loader } from './MainAppView.style';
 
+export const GoogleMapContext = React.createContext();
+
 const OFFERS_CHUNK = 20;
 
 class MainAppView extends React.Component {
@@ -292,24 +294,27 @@ class MainAppView extends React.Component {
         />
         {filteredHomeOffers.length > 0 ? (
           <ListAndMapWrapper>
-            <List
-              filteredHomeOffers={filteredHomeOffers}
-              onMouseEnter={this.onMouseEnterHandler}
-              onMouseLeave={this.onMouseLeaveHandler}
-              offers={offers}
-              handleSettingOffersState={this.handleSettingOffersState}
-            />
-            <GoogleMap
-              filteredHomeOffers={filteredHomeOffers}
-              hoverState={hover}
-              hoverIdState={hoverId}
-              center={center}
-              parentCallback={this.callbackSettingGeolocation}
-              setMapsApiLoaded={this.setMapsApiLoaded}
-              setMapInstance={this.setMapInstance}
-              setMapAPI={this.setMapAPI}
-              darkModeEnabled={darkModeEnabled}
-            />
+            <GoogleMapContext.Provider
+              value={{
+                filteredHomeOffers,
+                hoverState: hover,
+                hoverIdState: hoverId,
+                center,
+                setMapsApiLoaded: this.setMapsApiLoaded,
+                setMapInstance: this.setMapInstance,
+                setMapAPI: this.setMapAPI,
+                darkModeEnabled,
+              }}
+            >
+              <List
+                filteredHomeOffers={filteredHomeOffers}
+                onMouseEnter={this.onMouseEnterHandler}
+                onMouseLeave={this.onMouseLeaveHandler}
+                offers={offers}
+                handleSettingOffersState={this.handleSettingOffersState}
+              />
+              <GoogleMap parentCallback={this.callbackSettingGeolocation} />
+            </GoogleMapContext.Provider>
           </ListAndMapWrapper>
         ) : (
           <Loader>

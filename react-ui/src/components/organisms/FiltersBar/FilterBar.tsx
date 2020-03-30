@@ -12,8 +12,9 @@ import {
   StyledInput,
   FilterBarRowTwo,
 } from './FilterBar.style';
+import { FilterBarProps } from './FilterBar.types';
 
-const FilterBar = ({
+const FilterBar: React.FC<FilterBarProps> = ({
   currentActiveType,
   filterByType,
   priceChange,
@@ -26,7 +27,7 @@ const FilterBar = ({
 }) => {
   const [rangeValue, setRangeValue] = useState([0, 1.5]);
 
-  const changeHandler = value => {
+  const changeHandler = (value: number[]) => {
     setRangeValue(value);
     priceChange(value);
   };
@@ -37,7 +38,6 @@ const FilterBar = ({
         <TypeButtons>
           <StyledButton
             swap
-            dark
             onClick={() => filterByType('All')}
             active={currentActiveType === 'All'}
           >
@@ -45,7 +45,6 @@ const FilterBar = ({
           </StyledButton>
           <StyledButton
             rent
-            dark
             onClick={() => filterByType('Mieszkania » Wynajem')}
             active={currentActiveType === 'Mieszkania » Wynajem'}
           >
@@ -53,7 +52,6 @@ const FilterBar = ({
           </StyledButton>
           <StyledButton
             sell
-            dark
             onClick={() => filterByType('Mieszkania » Sprzedaż')}
             active={currentActiveType === 'Mieszkania » Sprzedaż'}
           >
@@ -61,7 +59,6 @@ const FilterBar = ({
           </StyledButton>
           <StyledButton
             swap
-            dark
             onClick={() => filterByType('Mieszkania » Zamiana')}
             active={currentActiveType === 'Mieszkania » Zamiana'}
           >
