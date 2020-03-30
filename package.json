@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/google-map-react": "^1.1.5",
     "@types/rc-slider": "^8.6.5",
     "@types/react-lottie": "^1.2.3",
     "@types/styled-components": "^5.0.1",

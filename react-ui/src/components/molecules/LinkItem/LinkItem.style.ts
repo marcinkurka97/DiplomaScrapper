@@ -4,7 +4,7 @@ export const LinkItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${({ theme }) => theme.body};
+  color: ${({ theme }: { theme: { body: string } }) => theme.body};
   margin: 0 0 0 50px;
 
   svg {

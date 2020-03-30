@@ -7,7 +7,7 @@ configure({ adapter: new Adapter() });
 
 describe('<ListItem />', () => {
   it('should render without throwing an error', () => {
-    shallow(<ListItem scrape={{ link: 'test Link' }} />);
+    shallow(<ListItem scrape={{ link: 'test Link' }} userID={null} />);
   });
 
   it('should not render star when user is not logged in', () => {
@@ -21,7 +21,9 @@ describe('<ListItem />', () => {
   });
 
   it('should render text from props', () => {
-    const wrapper = shallow(<ListItem scrape={{ title: 'test Title', link: 'test Link' }} />);
+    const wrapper = shallow(
+      <ListItem scrape={{ title: 'test Title', link: 'test Link' }} userID={null} />,
+    );
     expect(wrapper.find('.offer__title').text()).toEqual('test Title');
   });
 });

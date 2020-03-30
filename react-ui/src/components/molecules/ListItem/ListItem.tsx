@@ -2,8 +2,15 @@ import React from 'react';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { theme as MainTheme } from '../../../theme/mainTheme';
+import { ListItemProps } from './ListItem.types';
 
-const ListItem = ({ scrape, onMouseEnter, onMouseLeave, userID, addToFavourite }) => {
+const ListItem: React.FC<ListItemProps> = ({
+  scrape,
+  onMouseEnter,
+  onMouseLeave,
+  userID,
+  addToFavourite,
+}) => {
   return (
     <a
       className="offer-container"
@@ -12,8 +19,10 @@ const ListItem = ({ scrape, onMouseEnter, onMouseLeave, userID, addToFavourite }
       rel="noopener noreferrer"
       id={scrape.id}
       key={scrape.id}
-      onMouseEnter={() => onMouseEnter(scrape.id, scrape.position.lat, scrape.position.lng)}
-      onMouseLeave={() => onMouseLeave()}
+      onMouseEnter={() =>
+        onMouseEnter && onMouseEnter(scrape.id, scrape.position.lat, scrape.position.lng)
+      }
+      onMouseLeave={onMouseLeave}
     >
       <div className="offer">
         <div
@@ -48,11 +57,7 @@ const ListItem = ({ scrape, onMouseEnter, onMouseLeave, userID, addToFavourite }
         </div>
         <div className="offer__priceAndStar">
           {userID !== null && (
-            <FontAwesomeIcon
-              className="offer__star"
-              icon={faStar}
-              onClick={e => addToFavourite(e, scrape)}
-            />
+            <FontAwesomeIcon className="offer__star" icon={faStar} onClick={addToFavourite} />
           )}
           {scrape.price}
         </div>

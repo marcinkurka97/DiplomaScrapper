@@ -9,19 +9,6 @@ export const DarkModeContainer = styled.div`
   margin-left: auto;
 `;
 
-export const StyledIcon = styled.svg`
-  width: 28px;
-  height: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:last-of-type {
-    width: 24px;
-    height: 24px;
-  }
-`;
-
 export const SwitchWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -61,7 +48,8 @@ export const SwitchWrapper = styled.div`
   }
 
   input:checked + .slider {
-    background-color: ${({ theme }) => theme.backgroundDarkGray};
+    background-color: ${({ theme }: { theme: { backgroundDarkGray: string } }) =>
+      theme.backgroundDarkGray};
   }
 
   input:checked + .slider:before {
