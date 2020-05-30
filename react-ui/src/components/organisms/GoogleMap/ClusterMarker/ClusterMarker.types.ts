@@ -14,4 +14,6 @@ export type ClusteMarkerProps = {
   points: Array<PointObject>;
   hoverState: boolean;
   hoverIdState: string;
+  lat?: number;
+  lng?: number;
 };

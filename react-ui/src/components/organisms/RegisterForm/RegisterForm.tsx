@@ -4,8 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { register as registerAction } from '../../../actions';
 import { StyledForm, StyledInput, StyledButton } from '../LoginForm/LoginForm.style';
+import { RegisterFormProps } from './RegisterForm.types';
 
-const RegisterForm = ({ userID, register }) => (
+const RegisterForm: React.FC<RegisterFormProps> = ({ userID, register }) => (
   <Formik
     initialValues={{ username: '', email: '', password: '' }}
     onSubmit={({ username, email, password }) => {
@@ -25,7 +26,7 @@ const RegisterForm = ({ userID, register }) => (
             name="username"
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.title}
+            value={values.username}
           />
           <label htmlFor="email">Email</label>
           <StyledInput
@@ -34,7 +35,7 @@ const RegisterForm = ({ userID, register }) => (
             name="email"
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.title}
+            value={values.email}
           />
           <label htmlFor="password">Hasło</label>
           <StyledInput
@@ -43,7 +44,7 @@ const RegisterForm = ({ userID, register }) => (
             name="password"
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.title}
+            value={values.password}
           />
           <StyledButton type="submit">Zarejestruj się</StyledButton>
         </StyledForm>
@@ -56,8 +57,9 @@ const mapStateToProps = ({ userID = null }) => ({
   userID,
 });
 
-const mapDispatchToProps = dispatch => ({
-  register: (username, email, password) => dispatch(registerAction(username, email, password)),
+const mapDispatchToProps = (dispatch: any) => ({
+  register: (username: string, email: string, password: string) =>
+    dispatch(registerAction(username, email, password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);

@@ -4,8 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authenticate as authenticateAction } from '../../../actions';
 import { StyledForm, StyledInput, StyledButton } from './LoginForm.style';
+import { LoginFormProps } from './LoginForm.types';
 
-const LoginForm = ({ userID, authenticate }) => (
+const LoginForm: React.FC<LoginFormProps> = ({ userID, authenticate }) => (
   <Formik
     initialValues={{ username: '', password: '' }}
     onSubmit={({ username, password }) => {
@@ -14,7 +15,7 @@ const LoginForm = ({ userID, authenticate }) => (
   >
     {({ handleChange, handleBlur, values }) => {
       if (userID) {
-        localStorage.setItem('isUserLogged', true);
+        localStorage.setItem('isUserLogged', JSON.stringify(true));
         localStorage.setItem('userID', JSON.stringify(userID));
         return <Redirect to="/" />;
       }
@@ -27,7 +28,7 @@ const LoginForm = ({ userID, authenticate }) => (
             name="username"
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.title}
+            value={values.username}
           />
           <label htmlFor="password">Hasło</label>
           <StyledInput
@@ -36,7 +37,7 @@ const LoginForm = ({ userID, authenticate }) => (
             name="password"
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.title}
+            value={values.password}
           />
           <StyledButton type="submit">Zaloguj</StyledButton>
         </StyledForm>
@@ -49,8 +50,9 @@ const mapStateToProps = ({ userID = null }) => ({
   userID,
 });
 
-const mapDispatchToProps = dispatch => ({
-  authenticate: (username, password) => dispatch(authenticateAction(username, password)),
+const mapDispatchToProps = (dispatch: any) => ({
+  authenticate: (username: string, password: string) =>
+    dispatch(authenticateAction(username, password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

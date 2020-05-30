@@ -13,6 +13,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ mapInstance, mapsapi, filterByDis
 
   // Assign Google map search bar to custom input by ref
   useEffect(() => {
+    // eslint-disable-next-line
     searchBox = new mapsapi.places.SearchBox(searchInput.current);
     searchBox.addListener('places_changed', onPlacesChanged);
 

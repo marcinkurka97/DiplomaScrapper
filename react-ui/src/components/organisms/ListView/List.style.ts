@@ -55,7 +55,16 @@ export const OffersWrapper = styled.div`
       align-items: center;
       margin: 0 10px 10px 10px;
       border-radius: 6px;
-      background: ${({ theme }) => theme.backgroundOffer};
+      background: ${({
+        theme,
+      }: {
+        theme: {
+          backgroundDarkGray: string;
+          sliderHandle: string;
+          bodyOffer: string;
+          backgroundOffer: string;
+        };
+      }) => theme.backgroundOffer};
       transition: background 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
       animation: ${slideInBottom} 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -133,7 +142,18 @@ export const OffersWrapper = styled.div`
 
           &:hover {
             transform: scale(1.25);
-            color: ${({ theme }) => theme.orange};
+            color: ${({
+              theme,
+            }: {
+              theme: {
+                backgroundDarkGray: string;
+                sliderHandle: string;
+                bodyOffer: string;
+                backgroundOffer: string;
+                orange: string;
+              };
+              userID: string;
+            }) => theme.orange};
           }
         }
       }

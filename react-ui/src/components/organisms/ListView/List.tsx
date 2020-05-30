@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import ListItem from '../../molecules/ListItem/ListItem';
 import { OffersWrapper, StyledInfiniteScroll, NoOffers } from './List.style';
+import { ListProps } from './List.types';
 
 const OFFERS_CHUNK = 20;
 
-const List = ({
+const List: React.FC<ListProps> = ({
   offers,
   filteredHomeOffers,
   onMouseEnter,
@@ -25,7 +26,7 @@ const List = ({
     }
   };
 
-  const addToFavourite = star => {
+  const addToFavourite = (star: any) => {
     star.target.style.color = '#F28D52';
   };
 
@@ -33,7 +34,7 @@ const List = ({
     <OffersWrapper id="listWrapper" userID={userID}>
       <StyledInfiniteScroll
         dataLength={offers.length}
-        next={loadItems.bind(this)} // eslint-disable-line react/jsx-no-bind
+        next={loadItems} // eslint-disable-line react/jsx-no-bind
         hasMore={hasMore}
         loader={<h4>Loading...</h4>}
         scrollableTarget="listWrapper"
@@ -53,7 +54,7 @@ const List = ({
             </p>
           </NoOffers>
         ) : (
-          filteredHomeOffers.map(scrape => {
+          filteredHomeOffers.map((scrape: any) => {
             return (
               <ListItem
                 key={scrape.id}
@@ -71,7 +72,7 @@ const List = ({
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { userID } = state;
   return { userID };
 };

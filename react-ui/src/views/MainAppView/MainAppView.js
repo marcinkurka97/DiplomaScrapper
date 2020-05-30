@@ -183,42 +183,42 @@ class MainAppView extends React.Component {
       const splitedPrice = offer.price.split(' ');
       const intPrice = parseInt(splitedPrice.join(''), 10);
 
-      const dateArr = offer.date.split('-');
+      // const dateArr = offer.date.split('-');
 
-      const monthNames = [
-        'sty',
-        'lut',
-        'mar',
-        'kwi',
-        'maj',
-        'cze',
-        'lip',
-        'sie',
-        'wrz',
-        'paź',
-        'lis',
-        'gru',
-      ];
+      // const monthNames = [
+      //   'sty',
+      //   'lut',
+      //   'mar',
+      //   'kwi',
+      //   'maj',
+      //   'cze',
+      //   'lip',
+      //   'sie',
+      //   'wrz',
+      //   'paź',
+      //   'lis',
+      //   'gru',
+      // ];
 
-      const day = dateArr[0];
-      const month = monthNames.indexOf(dateArr[1]);
-      const year = dateArr[2];
+      // const day = dateArr[0];
+      // const month = monthNames.indexOf(dateArr[1]);
+      // const year = dateArr[2];
 
-      const dateFormat = new Date(year, month, parseInt(day, 10) + 1)
-        .toISOString()
-        .replace(/T.*/, '')
-        .split('-')
-        .reverse()
-        .join('-');
+      // const dateFormat = new Date(year, month, parseInt(day, 10) + 1)
+      //   .toISOString()
+      //   .replace(/T.*/, '')
+      //   .split('-')
+      //   .reverse()
+      //   .join('-');
 
-      const today = new Date();
-      let lastXDays = new Date();
+      // const today = new Date();
+      // let lastXDays = new Date();
 
-      if (dateDuration === 1) {
-        lastXDays = today;
-      } else {
-        lastXDays.setDate(today.getDate() - dateDuration + 1);
-      }
+      // if (dateDuration === 1) {
+      //   lastXDays = today;
+      // } else {
+      //   lastXDays.setDate(today.getDate() - dateDuration + 1);
+      // }
 
       // Get distance from current offer to circle center
       if (pinCenter) {
@@ -227,13 +227,13 @@ class MainAppView extends React.Component {
           pinCenter,
         );
         if (
-          dateFormat >=
-            lastXDays
-              .toISOString()
-              .replace(/T.*/, '')
-              .split('-')
-              .reverse()
-              .join('-') &&
+          // dateFormat >=
+          //   lastXDays
+          //     .toISOString()
+          //     .replace(/T.*/, '')
+          //     .split('-')
+          //     .reverse()
+          //     .join('-') &&
           distanceFromCenter < radius - 100 &&
           (currentActiveType === 'All' ? offer.type : offer.type === currentActiveType) &&
           (offer.price !== '' ? intPrice >= price.min && intPrice <= price.max : offer)
@@ -241,13 +241,13 @@ class MainAppView extends React.Component {
           return offer;
         }
       } else if (
-        dateFormat >=
-          lastXDays
-            .toISOString()
-            .replace(/T.*/, '')
-            .split('-')
-            .reverse()
-            .join('-') &&
+        // dateFormat >=
+        //   lastXDays
+        //     .toISOString()
+        //     .replace(/T.*/, '')
+        //     .split('-')
+        //     .reverse()
+        //     .join('-') &&
         (currentActiveType === 'All' ? offer.type : offer.type === currentActiveType) &&
         (offer.price !== '' ? intPrice >= price.min && intPrice <= price.max : offer)
       ) {

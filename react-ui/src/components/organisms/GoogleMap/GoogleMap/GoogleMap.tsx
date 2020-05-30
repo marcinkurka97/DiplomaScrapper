@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import GoogleMapReact from 'google-map-react';
 import supercluster from 'points-cluster';
 import Marker from '../Marker/Marker';
 import ClusterMarker from '../ClusterMarker/ClusterMarker';
 import { MapWrapper, mapDarkStyles, mapLightStyles } from './GoogleMap.style';
 import { GoogleMapContext } from '../../../../views/MainAppView/MainAppView';
+import { GoogleMapProps } from './GoogleMap.types';
 
 // Default options for Google Maps
 const MAP = {
@@ -15,16 +16,16 @@ const MAP = {
   },
 };
 
-const GoogleMap = ({ myLatLng }) => {
-  const mapRef = useRef();
+const GoogleMap: React.FC<GoogleMapProps> = ({ myLatLng }) => {
   const [mapOptions, setMapOptions] = useState({
     center: myLatLng,
     zoom: MAP.defaultZoom,
+    bounds: undefined,
   });
   const [clusters, setClusters] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [showingInfoWindow, setShowingInfoWindow] = useState(false);
-  const [activeMarker, setActiveMarker] = useState({});
+  const [activeMarker, setActiveMarker] = useState<any>({});
   const [selectedPlace, setSelectedPlace] = useState({});
   const {
     filteredHomeOffers,
@@ -37,7 +38,7 @@ const GoogleMap = ({ myLatLng }) => {
     hoverIdState,
   } = useContext(GoogleMapContext);
 
-  const onMarkerClick = (props, marker) => {
+  const onMarkerClick = (props: any, marker: any) => {
     setSelectedPlace(props);
     setActiveMarker(marker);
     setShowingInfoWindow(true);
@@ -52,8 +53,8 @@ const GoogleMap = ({ myLatLng }) => {
   };
 
   // Create markers object array (provided via props)
-  const getScrapeData = offers => {
-    const markersData = offers.map((offer, index) => {
+  const getScrapeData = (offers: any) => {
+    const markersData = offers.map((offer: any, index: any) => {
       if (offer !== 0) {
         return {
           id: index,
@@ -85,22 +86,31 @@ const GoogleMap = ({ myLatLng }) => {
   }, [mapOptions, markers]);
 
   // Filling clusters state with data from supercluster
-  const createClusters = useCallback(
-    props => {
-      const newClusters = mapOptions.bounds
-        ? getClusters(props).map(({ wx, wy, numPoints, points }) => ({
+  const createClusters = useCallback(() => {
+    const newClusters = mapOptions.bounds
+      ? getClusters().map(
+          ({
+            wx,
+            wy,
+            numPoints,
+            points,
+          }: {
+            wx: number;
+            wy: number;
+            numPoints: any;
+            points: any;
+          }) => ({
             lat: wy,
             lng: wx,
             numPoints,
             id: `${numPoints}_${points[0].id}`,
             points,
-          }))
-        : [];
+          }),
+        )
+      : [];
 
-      setClusters(newClusters);
-    },
-    [getClusters, mapOptions.bounds],
-  );
+    setClusters(newClusters);
+  }, [getClusters, mapOptions.bounds]);
 
   // On every map change (zoom, dragging) rerender displayed clusters
   const handleMapChange = useCallback(
@@ -110,13 +120,13 @@ const GoogleMap = ({ myLatLng }) => {
         zoom,
         bounds,
       });
-      createClusters(this.props);
+      createClusters();
     },
     [createClusters],
   );
 
   // Send data to parent component
-  const apiIsLoaded = (map, maps) => {
+  const apiIsLoaded = (map: any, maps: any) => {
     setMapInstance(map);
     setMapAPI(maps);
     setMapsApiLoaded();
@@ -126,12 +136,12 @@ const GoogleMap = ({ myLatLng }) => {
   useEffect(() => {
     getScrapeData(filteredHomeOffers);
     handleMapChange(mapOptions);
+    // eslint-disable-next-line
   }, [filteredHomeOffers]);
 
   return (
     <MapWrapper>
       <GoogleMapReact
-        ref={mapRef}
         defaultZoom={MAP.defaultZoom}
         defaultCenter={{
           lat: 50.264821,
@@ -139,7 +149,6 @@ const GoogleMap = ({ myLatLng }) => {
         }}
         center={center}
         options={{
-          options: MAP.options,
           styles:
             (localStorage.getItem('dark') === 'true' ? mapDarkStyles : mapLightStyles) ||
             (darkModeEnabled ? mapDarkStyles : mapLightStyles),
@@ -155,7 +164,7 @@ const GoogleMap = ({ myLatLng }) => {
         onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
       >
         {/* If there is only 1 marker nearby place Marker on map */}
-        {clusters.map(item => {
+        {clusters.map((item: any) => {
           if (item.numPoints === 1) {
             return (
               <Marker

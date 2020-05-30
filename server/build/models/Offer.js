@@ -22,14 +22,14 @@ var OfferSchema = new Schema({
     required: true,
     minlength: 5,
     maxlength: 255,
-    unique: true
+    sparse: true
   },
   img: {
     type: String,
     required: true,
     minlength: 5,
     maxlength: 255,
-    unique: true
+    sparse: true
   },
   price: {
     type: String,

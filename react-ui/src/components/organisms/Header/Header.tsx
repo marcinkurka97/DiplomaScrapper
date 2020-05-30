@@ -8,25 +8,26 @@ import LogoSVG from '../../../assets/logo1.svg';
 import LogoSVGDark from '../../../assets/logo3.svg';
 import { theme as mainTheme } from '../../../theme/mainTheme';
 import { StyledHeader, Logo, LoginPanel, StyledButton, NavPanel } from './Header.style';
+import { HeaderProps } from './Header.types';
 
-const Header = ({ darkModeEnabled, logout }) => {
+const Header: React.FC<HeaderProps> = ({ darkModeEnabled, logout }) => {
   const [isUserLogged, setIsUserLogged] = useState(localStorage.getItem('isUserLogged') === 'true');
 
   return (
     <StyledHeader>
       <NavPanel>
-        <Logo
-          style={{
-            background: `url(${darkModeEnabled ? LogoSVGDark : LogoSVG})`,
-            width: '200px',
-            height: '8vh',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'contain',
-            backgroundPosition: 'center center',
-          }}
-          as={NavLink}
-          to="/"
-        />
+        <NavLink to="/">
+          <Logo
+            style={{
+              background: `url(${darkModeEnabled ? LogoSVGDark : LogoSVG})`,
+              width: '200px',
+              height: '8vh',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+            }}
+          />
+        </NavLink>
         {isUserLogged && (
           <>
             <LinkItem theme={mainTheme} icon={faSearch} linkTitle="Search" />
@@ -39,20 +40,20 @@ const Header = ({ darkModeEnabled, logout }) => {
       <LoginPanel>
         {!isUserLogged && (
           <>
-            <StyledButton color={mainTheme.green} as={NavLink} to="/login">
-              Logowanie
-            </StyledButton>
-            <StyledButton color={mainTheme.orange} as={NavLink} to="/register">
-              Rejestracja
-            </StyledButton>
+            <NavLink to="/login">
+              <StyledButton color={mainTheme.green}>Logowanie</StyledButton>
+            </NavLink>
+            <NavLink to="/register">
+              <StyledButton color={mainTheme.orange}>Rejestracja</StyledButton>
+            </NavLink>
           </>
         )}
         {isUserLogged && (
           <StyledButton
             color={mainTheme.orange}
             onClick={() => {
-              localStorage.setItem('isUserLogged', false);
-              localStorage.setItem('userID', null);
+              localStorage.setItem('isUserLogged', JSON.stringify(false));
+              localStorage.setItem('userID', JSON.stringify(null));
               logout();
               setIsUserLogged(false);
               return <Redirect to="/" />;
@@ -66,12 +67,12 @@ const Header = ({ darkModeEnabled, logout }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { userID } = state;
   return { userID };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: any) => ({
   logout: () => dispatch(logoutAction()),
 });
 

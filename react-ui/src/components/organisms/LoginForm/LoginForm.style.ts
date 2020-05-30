@@ -14,7 +14,7 @@ export const StyledInput = styled(Input)`
   border-radius: 0;
   border: 1px solid rgba(36, 28, 21, 0.3);
   background-color: #fff;
-  color: ${({ theme }) => theme.black};
+  color: ${({ theme }: { theme: { black: string } }) => theme.black};
   padding: 0 15px;
   height: 52px;
   width: 100%;
@@ -23,7 +23,7 @@ export const StyledInput = styled(Input)`
 
 export const StyledButton = styled(Button)`
   border-radius: 0;
-  background-color: ${({ theme }) => theme.blue};
+  background-color: ${({ theme }: { theme: { black: string; blue: string } }) => theme.blue};
   height: 52px;
   width: 100%;
   font-size: 20px;
